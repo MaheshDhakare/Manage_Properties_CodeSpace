@@ -112,6 +112,26 @@
       font-size:13px;
       padding:6px 0;
     }
+	
+	.ad-placeholder{
+	  border: 1px dashed #cbd5e1;
+	  border-radius: 14px;
+	  padding: 14px;
+	  background: #f8fafc;
+	}
+	.ad-badge{
+	  display:inline-block;
+	  padding:4px 8px;
+	  border-radius:999px;
+	  font-weight:900;
+	  font-size:12px;
+	  background:#111827;
+	  color:#fff;
+	  margin-bottom:8px;
+	}
+	.ad-title{font-weight:900;font-size:14px;margin-bottom:4px;}
+	.ad-desc{opacity:.75;font-size:13px;line-height:1.35;}
+		
   </style>
 </head>
 
@@ -127,7 +147,12 @@
 
       <div class="meta">
         <div><strong>Area:</strong> <span id="area"></span></div>
+        <div id="sharedByRow" style="display:none;margin-top:6px;">
+          <strong>Shared By:</strong>
+          <span id="sharedBy"></span>
+        </div>
       </div>
+
 
       <section class="sec">
         <h2>Summary</h2>
@@ -146,7 +171,19 @@
         <div class="empty" id="attEmpty" style="display:none;">No files.</div>
       </section>
     </main>
+
+    <!-- ✅ Ad section BELOW the card (not inside it) -->
+    <section class="sec" id="adSec">
+      <h2>Sponsored</h2>
+      <div class="ad-placeholder">
+        <div class="ad-badge">Ad</div>
+        <div class="ad-title">Test Banner</div>
+        <div class="ad-desc">This is a placeholder for your web ad banner.</div>
+      </div>
+    </section>
+
   </div>
+
 
   <!-- Fullscreen image viewer -->
   <div class="viewer" id="viewer">
@@ -188,9 +225,22 @@
     }
 
     // Basic data
+    // Basic data
     document.getElementById('title').textContent = safeText(payload.title);
     document.getElementById('area').textContent  = safeText(payload.area);
     document.getElementById('summary').textContent = safeText(payload.summary);
+
+    // Shared By
+    const sb = safeText(payload.shared_by);
+    const sc = safeText(payload.shared_contact);
+    const sharedByRow = document.getElementById('sharedByRow');
+    const sharedBy = document.getElementById('sharedBy');
+
+    if ((sb || sc) && sharedByRow && sharedBy) {
+      sharedByRow.style.display = "block";
+      sharedBy.textContent = sb && sc ? `${sb} - ${sc}` : (sb || sc);
+    }
+
 
     // pills
     const type = safeText(payload.type);
