@@ -174,7 +174,7 @@
 
     <!-- ✅ Ad section BELOW the card (not inside it) -->
     <section class="sec" id="adSec">
-      <h2>Sponsored</h2>
+      <!-- <h2>Sponsored</h2> -->
       <div class="ad-placeholder">
         <div class="ad-badge">Ad</div>
         <div class="ad-title">Test Banner</div>
@@ -194,156 +194,6 @@
 <script>
   function qs(k){ return new URLSearchParams(location.search).get(k); }
 
-<!--   function decodePayload(encoded){
-    try{
-      const raw = atob(encoded);
-      const json = decodeURIComponent(raw);
-      return JSON.parse(json);
-    }catch(e){
-      return null;
-    }
-  } -->
-
-function decodePayload(encoded){
-  try{
-    const keyStrUriSafe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
-    const baseReverseDic = {};
-
-    function getBaseValue(alphabet, character) {
-      if (!baseReverseDic[alphabet]) {
-        baseReverseDic[alphabet] = {};
-        for (let i = 0; i < alphabet.length; i++) baseReverseDic[alphabet][alphabet.charAt(i)] = i;
-      }
-      return baseReverseDic[alphabet][character];
-    }
-
-    function decompress(length, resetValue, getNextValue) {
-      const dictionary = [];
-      let next;
-      let enlargeIn = 4;
-      let dictSize = 4;
-      let numBits = 3;
-      let entry = "";
-      const result = [];
-      let i;
-      let w;
-      let bits, resb, maxpower, power;
-      let c;
-      const data = { val: getNextValue(0), position: resetValue, index: 1 };
-
-      for (i = 0; i < 3; i += 1) dictionary[i] = i;
-
-      bits = 0; maxpower = Math.pow(2, 2); power = 1;
-      while (power != maxpower) {
-        resb = data.val & data.position;
-        data.position >>= 1;
-        if (data.position == 0) { data.position = resetValue; data.val = getNextValue(data.index++); }
-        bits |= (resb > 0 ? 1 : 0) * power;
-        power <<= 1;
-      }
-
-      switch (next = bits) {
-        case 0:
-          bits = 0; maxpower = Math.pow(2, 8); power = 1;
-          while (power != maxpower) {
-            resb = data.val & data.position;
-            data.position >>= 1;
-            if (data.position == 0) { data.position = resetValue; data.val = getNextValue(data.index++); }
-            bits |= (resb > 0 ? 1 : 0) * power;
-            power <<= 1;
-          }
-          c = String.fromCharCode(bits);
-          break;
-        case 1:
-          bits = 0; maxpower = Math.pow(2, 16); power = 1;
-          while (power != maxpower) {
-            resb = data.val & data.position;
-            data.position >>= 1;
-            if (data.position == 0) { data.position = resetValue; data.val = getNextValue(data.index++); }
-            bits |= (resb > 0 ? 1 : 0) * power;
-            power <<= 1;
-          }
-          c = String.fromCharCode(bits);
-          break;
-        case 2:
-          return "";
-      }
-
-      dictionary[3] = c;
-      w = c;
-      result.push(c);
-
-      while (true) {
-        if (data.index > length) return "";
-
-        bits = 0; maxpower = Math.pow(2, numBits); power = 1;
-        while (power != maxpower) {
-          resb = data.val & data.position;
-          data.position >>= 1;
-          if (data.position == 0) { data.position = resetValue; data.val = getNextValue(data.index++); }
-          bits |= (resb > 0 ? 1 : 0) * power;
-          power <<= 1;
-        }
-
-        switch (c = bits) {
-          case 0:
-            bits = 0; maxpower = Math.pow(2, 8); power = 1;
-            while (power != maxpower) {
-              resb = data.val & data.position;
-              data.position >>= 1;
-              if (data.position == 0) { data.position = resetValue; data.val = getNextValue(data.index++); }
-              bits |= (resb > 0 ? 1 : 0) * power;
-              power <<= 1;
-            }
-            dictionary[dictSize++] = String.fromCharCode(bits);
-            c = dictSize - 1;
-            enlargeIn--;
-            break;
-
-          case 1:
-            bits = 0; maxpower = Math.pow(2, 16); power = 1;
-            while (power != maxpower) {
-              resb = data.val & data.position;
-              data.position >>= 1;
-              if (data.position == 0) { data.position = resetValue; data.val = getNextValue(data.index++); }
-              bits |= (resb > 0 ? 1 : 0) * power;
-              power <<= 1;
-            }
-            dictionary[dictSize++] = String.fromCharCode(bits);
-            c = dictSize - 1;
-            enlargeIn--;
-            break;
-
-          case 2:
-            return result.join('');
-        }
-
-        if (enlargeIn == 0) { enlargeIn = Math.pow(2, numBits); numBits++; }
-
-        if (dictionary[c]) entry = dictionary[c];
-        else if (c === dictSize) entry = w + w.charAt(0);
-        else return null;
-
-        result.push(entry);
-
-        dictionary[dictSize++] = w + entry.charAt(0);
-        enlargeIn--;
-
-        w = entry;
-
-        if (enlargeIn == 0) { enlargeIn = Math.pow(2, numBits); numBits++; }
-      }
-    }
-
-    const json = decompress(encoded.length, 32, index => getBaseValue(keyStrUriSafe, encoded.charAt(index)));
-    return json ? JSON.parse(json) : null;
-
-  }catch(e){
-    return null;
-  }
-}
-
-
   function escapeHtml(s){
     return String(s||'')
       .replace(/&/g,"&amp;")
@@ -356,102 +206,127 @@ function decodePayload(encoded){
   function safeText(v){ return String(v||'').trim(); }
 
   (function init(){
-    const d = qs('d');
-    const payload = d ? decodePayload(d) : null;
+    const sid = String(qs('sid') || '').trim();
 
-    if (!payload){
+    if (!sid){
       document.body.innerHTML = "<div style='padding:18px;font-weight:900;font-family:system-ui'>Invalid share link.</div>";
       return;
     }
 
-    // Basic data
-    // Basic data
-    document.getElementById('title').textContent = safeText(payload.title);
-    document.getElementById('area').textContent  = safeText(payload.area);
-    document.getElementById('summary').textContent = safeText(payload.summary);
+    // ✅ Load JSON from Supabase public storage bucket "shares"
+    (async function(){
+      try{
+        const jsonFile = `share_${encodeURIComponent(sid)}.json`;
 
-    // Shared By
-    const sb = safeText(payload.shared_by);
-    const sc = safeText(payload.shared_contact);
-    const sharedByRow = document.getElementById('sharedByRow');
-    const sharedBy = document.getElementById('sharedBy');
+        const jsonUrl =
+          `https://mxuknvleveqqybhbhwnv.supabase.co/storage/v1/object/public/shares/${encodeURIComponent(jsonFile)}`;
 
-    if ((sb || sc) && sharedByRow && sharedBy) {
-      sharedByRow.style.display = "block";
-      sharedBy.textContent = sb && sc ? `${sb} - ${sc}` : (sb || sc);
-    }
+        const res = await fetch(jsonUrl, { cache: "no-store" });
+        if (!res.ok) throw new Error("Share JSON not found");
+
+        const payload = await res.json();
+        if (!payload) throw new Error("Invalid JSON payload");
+
+        // ✅ Render UI
+        document.getElementById('title').textContent = safeText(payload.title);
+        document.getElementById('area').textContent  = safeText(payload.area);
+        document.getElementById('summary').textContent = safeText(payload.summary);
+
+        // Shared By
+        const sb = safeText(payload.shared_by);
+        const sc = safeText(payload.shared_contact);
+        const sharedByRow = document.getElementById('sharedByRow');
+        const sharedBy = document.getElementById('sharedBy');
+
+        if ((sb || sc) && sharedByRow && sharedBy) {
+          sharedByRow.style.display = "block";
+          sharedBy.textContent = sb && sc ? `${sb} - ${sc}` : (sb || sc);
+        }
+
+        // Pills
+        const type = safeText(payload.type);
+        const cat  = safeText(payload.category);
+
+        const typePill = document.getElementById('typePill');
+        const catPill  = document.getElementById('catPill');
+
+        if (type) { typePill.textContent = type; typePill.style.display = "inline-flex"; }
+        if (cat)  { catPill.textContent  = cat;  catPill.style.display  = "inline-flex"; }
+
+		// Images
+		const imgs = Array.isArray(payload.images) ? payload.images : [];
+		const imgSec  = document.getElementById('imgSec');
+		const imgGrid = document.getElementById('imgGrid');
+		const imgEmpty = document.getElementById('imgEmpty');
+
+		if (!imgs.length){
+		  // ✅ Hide whole section
+		  if (imgSec) imgSec.style.display = "none";
+		} else {
+		  if (imgSec) imgSec.style.display = "block";
+		  imgGrid.innerHTML = imgs.map(src =>
+			`<img src="${escapeHtml(src)}" data-src="${escapeHtml(src)}" alt="image">`
+		  ).join('');
+		  imgEmpty.style.display = "none";
+		}
 
 
-    // pills
-    const type = safeText(payload.type);
-    const cat  = safeText(payload.category);
+		// Attachments
+		const atts = Array.isArray(payload.attachments) ? payload.attachments : [];
+		const attSec  = document.getElementById('attSec');
+		const attList = document.getElementById('attList');
+		const attEmpty = document.getElementById('attEmpty');
 
-    const typePill = document.getElementById('typePill');
-    const catPill  = document.getElementById('catPill');
+		if (!atts.length){
+		  // ✅ Hide whole section
+		  if (attSec) attSec.style.display = "none";
+		} else {
+		  if (attSec) attSec.style.display = "block";
+		  attList.innerHTML = atts.map((a, idx) => {
+			const name = escapeHtml(a?.name || ("Attachment " + (idx+1)));
+			const src  = escapeHtml(a?.src || "");
+			return `
+			  <div class="att">
+				<div class="name">${name}</div>
+				<a href="${src}" target="_blank" rel="noopener">Open</a>
+			  </div>
+			`;
+		  }).join('');
+		  attEmpty.style.display = "none";
+		}
 
-    if (type) { typePill.textContent = type; typePill.style.display = "inline-flex"; }
-    if (cat)  { catPill.textContent  = cat;  catPill.style.display  = "inline-flex"; }
 
-    // Images (gallery)
-    const imgs = Array.isArray(payload.images) ? payload.images : [];
-    const imgSec = document.getElementById('imgSec');
-    const imgGrid = document.getElementById('imgGrid');
-    const imgEmpty = document.getElementById('imgEmpty');
+        // Fullscreen image viewer
+        const viewer = document.getElementById('viewer');
+        const viewerImg = document.getElementById('viewerImg');
+        const viewerClose = document.getElementById('viewerClose');
 
-    if (!imgs.length){
-      imgGrid.innerHTML = "";
-      imgEmpty.style.display = "block";
-    } else {
-      imgGrid.innerHTML = imgs.map(src => `<img src="${escapeHtml(src)}" data-src="${escapeHtml(src)}" alt="image">`).join('');
-    }
+        imgGrid.addEventListener('click', (e) => {
+          const t = e.target;
+          if (!t || t.tagName !== "IMG") return;
+          const src = t.getAttribute("data-src") || t.getAttribute("src");
+          if (!src) return;
+          viewerImg.src = src;
+          viewer.style.display = "grid";
+        });
 
-    // Attachments (Open button only - no src text)
-    const atts = Array.isArray(payload.attachments) ? payload.attachments : [];
-    const attList = document.getElementById('attList');
-    const attEmpty = document.getElementById('attEmpty');
+        function closeViewer(){
+          viewer.style.display = "none";
+          viewerImg.src = "";
+        }
 
-    if (!atts.length){
-      attList.innerHTML = "";
-      attEmpty.style.display = "block";
-    } else {
-      attList.innerHTML = atts.map((a, idx) => {
-        const name = escapeHtml(a?.name || ("Attachment " + (idx+1)));
-        const src  = escapeHtml(a?.src || "");
-        return `
-          <div class="att">
-            <div class="name">${name}</div>
-            <a href="${src}" target="_blank" rel="noopener">Open</a>
-          </div>
-        `;
-      }).join('');
-    }
+        viewerClose.addEventListener('click', closeViewer);
+        viewer.addEventListener('click', (e) => {
+          if (e.target === viewer) closeViewer();
+        });
 
-    // Fullscreen image viewer
-    const viewer = document.getElementById('viewer');
-    const viewerImg = document.getElementById('viewerImg');
-    const viewerClose = document.getElementById('viewerClose');
-
-    imgGrid.addEventListener('click', (e) => {
-      const t = e.target;
-      if (!t || t.tagName !== "IMG") return;
-      const src = t.getAttribute("data-src") || t.getAttribute("src");
-      if (!src) return;
-      viewerImg.src = src;
-      viewer.style.display = "grid";
-    });
-
-    function closeViewer(){
-      viewer.style.display = "none";
-      viewerImg.src = "";
-    }
-
-    viewerClose.addEventListener('click', closeViewer);
-    viewer.addEventListener('click', (e) => {
-      if (e.target === viewer) closeViewer();
-    });
-
+      }catch(e){
+        document.body.innerHTML = "<div style='padding:18px;font-weight:900;font-family:system-ui'>Invalid or expired share link.</div>";
+      }
+    })();
   })();
 </script>
+
 
 </body>
 </html>
