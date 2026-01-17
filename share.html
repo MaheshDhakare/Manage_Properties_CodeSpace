@@ -112,78 +112,112 @@
       font-size:13px;
       padding:6px 0;
     }
-	
-	.ad-placeholder{
-	  border: 1px dashed #cbd5e1;
-	  border-radius: 14px;
-	  padding: 14px;
-	  background: #f8fafc;
-	}
-	.ad-badge{
-	  display:inline-block;
-	  padding:4px 8px;
-	  border-radius:999px;
-	  font-weight:900;
-	  font-size:12px;
-	  background:#111827;
-	  color:#fff;
-	  margin-bottom:8px;
-	}
-	.ad-title{font-weight:900;font-size:14px;margin-bottom:4px;}
-	.ad-desc{opacity:.75;font-size:13px;line-height:1.35;}
-		
+
+    .ad-placeholder{
+      border: 1px dashed #cbd5e1;
+      border-radius: 14px;
+      padding: 14px;
+      background: #f8fafc;
+    }
+    .ad-badge{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      background:#111827;
+      color:#fff;
+      margin-bottom:8px;
+    }
+    .ad-title{font-weight:900;font-size:14px;margin-bottom:4px;}
+    .ad-desc{opacity:.75;font-size:13px;line-height:1.35;}
+
+    /* ===================================================
+       ✅ Loader overlay + hide content initially
+       =================================================== */
+    #pageLoader{
+      position:fixed;
+      inset:0;
+      z-index:999999;
+      background:#f3f6fb;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:10px;
+    }
+    .loaderSpin{
+      width:42px;
+      height:42px;
+      border:4px solid #cbd5e1;
+      border-top-color:#1d4ed8;
+      border-radius:50%;
+      animation:spin 0.9s linear infinite;
+    }
+    @keyframes spin{
+      from{transform:rotate(0deg)}
+      to{transform:rotate(360deg)}
+    }
+    #pageContent{ display:none; }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <main class="card">
-      <div class="row">
-        <div class="pill" id="typePill" style="display:none;"></div>
-        <div class="pill" id="catPill" style="display:none;"></div>
-      </div>
 
-      <h1 id="title"></h1>
-
-      <div class="meta">
-        <div><strong>Area:</strong> <span id="area"></span></div>
-        <div id="sharedByRow" style="display:none;margin-top:6px;">
-          <strong>Shared By:</strong>
-          <span id="sharedBy"></span>
-        </div>
-      </div>
-
-
-      <section class="sec">
-        <h2>Summary</h2>
-        <div id="summary"></div>
-      </section>
-
-      <section class="sec" id="imgSec">
-        <h2>Images</h2>
-        <div class="imgGrid" id="imgGrid"></div>
-        <div class="empty" id="imgEmpty" style="display:none;">No images.</div>
-      </section>
-
-      <section class="sec" id="attSec">
-        <h2>Attachments</h2>
-        <div class="attList" id="attList"></div>
-        <div class="empty" id="attEmpty" style="display:none;">No files.</div>
-      </section>
-    </main>
-
-    <!-- ✅ Ad section BELOW the card (not inside it) -->
-    <section class="sec" id="adSec">
-      <!-- <h2>Sponsored</h2> -->
-      <div class="ad-placeholder">
-        <div class="ad-badge">Ad</div>
-        <div class="ad-title">Test Banner</div>
-        <div class="ad-desc">This is a placeholder for your web ad banner.</div>
-      </div>
-    </section>
-
+  <!-- ✅ Loader -->
+  <div id="pageLoader">
+    <div class="loaderSpin"></div>
+    <div style="font-weight:900;font-family:system-ui;">Loading property...</div>
+    <div style="opacity:.7;font-size:13px;">Please wait</div>
   </div>
 
+  <!-- ✅ Content (hidden until data is ready) -->
+  <div id="pageContent">
+    <div class="wrap">
+      <main class="card">
+        <div class="row">
+          <div class="pill" id="typePill" style="display:none;"></div>
+          <div class="pill" id="catPill" style="display:none;"></div>
+        </div>
+
+        <h1 id="title"></h1>
+
+        <div class="meta">
+          <div><strong>Area:</strong> <span id="area"></span></div>
+          <div id="sharedByRow" style="display:none;margin-top:6px;">
+            <strong>Shared By:</strong>
+            <span id="sharedBy"></span>
+          </div>
+        </div>
+
+        <section class="sec">
+          <h2>Summary</h2>
+          <div id="summary"></div>
+        </section>
+
+        <section class="sec" id="imgSec">
+          <h2>Images</h2>
+          <div class="imgGrid" id="imgGrid"></div>
+          <div class="empty" id="imgEmpty" style="display:none;">No images.</div>
+        </section>
+
+        <section class="sec" id="attSec">
+          <h2>Files</h2>
+          <div class="attList" id="attList"></div>
+          <div class="empty" id="attEmpty" style="display:none;">No files.</div>
+        </section>
+      </main>
+
+      <!-- ✅ Ad section BELOW the card (not inside it) -->
+      <section class="sec" id="adSec">
+        <div class="ad-placeholder">
+          <div class="ad-badge">Ad</div>
+          <div class="ad-title">Test Banner</div>
+          <div class="ad-desc">This is a placeholder for your web ad banner.</div>
+        </div>
+      </section>
+    </div>
+  </div>
 
   <!-- Fullscreen image viewer -->
   <div class="viewer" id="viewer">
@@ -205,6 +239,13 @@
 
   function safeText(v){ return String(v||'').trim(); }
 
+  function showContent(){
+    const ld = document.getElementById('pageLoader');
+    const ct = document.getElementById('pageContent');
+    if (ld) ld.style.display = "none";
+    if (ct) ct.style.display = "block";
+  }
+
   (function init(){
     const sid = String(qs('sid') || '').trim();
 
@@ -213,7 +254,6 @@
       return;
     }
 
-    // ✅ Load JSON from Supabase public storage bucket "shares"
     (async function(){
       try{
         const jsonFile = `share_${encodeURIComponent(sid)}.json`;
@@ -253,48 +293,40 @@
         if (type) { typePill.textContent = type; typePill.style.display = "inline-flex"; }
         if (cat)  { catPill.textContent  = cat;  catPill.style.display  = "inline-flex"; }
 
-		// Images
-		const imgs = Array.isArray(payload.images) ? payload.images : [];
-		const imgSec  = document.getElementById('imgSec');
-		const imgGrid = document.getElementById('imgGrid');
-		const imgEmpty = document.getElementById('imgEmpty');
+        // Images
+        const imgs = Array.isArray(payload.images) ? payload.images : [];
+        const imgSec  = document.getElementById('imgSec');
+        const imgGrid = document.getElementById('imgGrid');
 
-		if (!imgs.length){
-		  // ✅ Hide whole section
-		  if (imgSec) imgSec.style.display = "none";
-		} else {
-		  if (imgSec) imgSec.style.display = "block";
-		  imgGrid.innerHTML = imgs.map(src =>
-			`<img src="${escapeHtml(src)}" data-src="${escapeHtml(src)}" alt="image">`
-		  ).join('');
-		  imgEmpty.style.display = "none";
-		}
+        if (!imgs.length){
+          if (imgSec) imgSec.style.display = "none";
+        } else {
+          if (imgSec) imgSec.style.display = "block";
+          imgGrid.innerHTML = imgs.map(src =>
+            `<img src="${escapeHtml(src)}" data-src="${escapeHtml(src)}" alt="image">`
+          ).join('');
+        }
 
+        // Attachments
+        const atts = Array.isArray(payload.attachments) ? payload.attachments : [];
+        const attSec  = document.getElementById('attSec');
+        const attList = document.getElementById('attList');
 
-		// Attachments
-		const atts = Array.isArray(payload.attachments) ? payload.attachments : [];
-		const attSec  = document.getElementById('attSec');
-		const attList = document.getElementById('attList');
-		const attEmpty = document.getElementById('attEmpty');
-
-		if (!atts.length){
-		  // ✅ Hide whole section
-		  if (attSec) attSec.style.display = "none";
-		} else {
-		  if (attSec) attSec.style.display = "block";
-		  attList.innerHTML = atts.map((a, idx) => {
-			const name = escapeHtml(a?.name || ("Attachment " + (idx+1)));
-			const src  = escapeHtml(a?.src || "");
-			return `
-			  <div class="att">
-				<div class="name">${name}</div>
-				<a href="${src}" target="_blank" rel="noopener">Open</a>
-			  </div>
-			`;
-		  }).join('');
-		  attEmpty.style.display = "none";
-		}
-
+        if (!atts.length){
+          if (attSec) attSec.style.display = "none";
+        } else {
+          if (attSec) attSec.style.display = "block";
+          attList.innerHTML = atts.map((a, idx) => {
+            const name = escapeHtml(a?.name || ("Attachment " + (idx+1)));
+            const src  = escapeHtml(a?.src || "");
+            return `
+              <div class="att">
+                <div class="name">${name}</div>
+                <a href="${src}" target="_blank" rel="noopener">Open</a>
+              </div>
+            `;
+          }).join('');
+        }
 
         // Fullscreen image viewer
         const viewer = document.getElementById('viewer');
@@ -320,13 +352,19 @@
           if (e.target === viewer) closeViewer();
         });
 
+        // ✅ Show page only AFTER everything is ready
+        showContent();
+
       }catch(e){
+        // avoid loader stuck
+        const ld = document.getElementById('pageLoader');
+        if (ld) ld.style.display = "none";
+
         document.body.innerHTML = "<div style='padding:18px;font-weight:900;font-family:system-ui'>Invalid or expired share link.</div>";
       }
     })();
   })();
 </script>
-
 
 </body>
 </html>
