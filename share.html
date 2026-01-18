@@ -215,21 +215,23 @@
 	<section class="sec" id="expiredSec" style="display:none;">
 	  <div class="card" style="padding:14px;border-radius:16px;">
 		
-		<div style="font-weight:900;font-size:16px;margin-bottom:8px;">
+		<div style="font-weight:900;font-size:16px;margin-bottom:10px;">
 		  This shared link is expired.
 		</div>
 
 		<!-- ✅ NEW: Title line -->
 		<div id="expiredTitle"
-			 style="margin-top:6px;font-weight:900;font-size:15px;text-transform:capitalize;">
+			 style="margin-top:6px;font-weight:900;font-size:16px;text-transform:capitalize;">
 		</div>
 
 		<div id="expiredHint" style="opacity:.85;font-size:14px;line-height:1.45;margin-top:10px;">
 		  To get details about the property you can contact:
 		</div>
 
-		<div id="expiredContact" style="margin-top:10px;font-weight:900;font-size:15px;"></div>
-		<div id="expiredContact2" style="margin-top:6px;opacity:.85;font-size:14px;"></div>
+		<div id="expiredContactRow"
+			 style="margin-top:10px;font-weight:900;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+		</div>
+
 	  </div>
 	</section>
 
@@ -260,16 +262,23 @@
 		.trim();
 	}
 
-	function getUrlContact(){
-	  // ✅ read from URL, not cache
-	  const t = decodeSlug(qs('t')); // title
-	  const n = decodeSlug(qs('n')); // name
-	  const p = decodeSlug(qs('p')); // phone
-	  return { title: t, name: n, phone: p };
+	// ✅ Convert slug back to readable text
+	// - only used for title + name
+	function unslugText(s){
+	  return String(s || '')
+		.replace(/-/g, ' ')     // hyphen → space
+		.replace(/\s{2,}/g, ' ') // cleanup multiple spaces
+		.trim();
 	}
 
-
-  
+	function getUrlContact(){
+	  // ✅ read from URL, not cache
+	  const t = unslugText(decodeSlug(qs('t'))); // title
+	  const n = unslugText(decodeSlug(qs('n'))); // name
+	  const p = decodeSlug(qs('p'));             // phone (DO NOT unslug)
+	  return { title: t, name: n, phone: p };
+	}
+	  
 
   function escapeHtml(s){
     return String(s||'')
@@ -359,8 +368,8 @@ function showExpiredUI(sid){
   // ✅ show expired section
   const expiredSec = document.getElementById('expiredSec');
   const expiredTitle = document.getElementById('expiredTitle');
-  const expiredContact = document.getElementById('expiredContact');
-  const expiredContact2 = document.getElementById('expiredContact2');
+  const expiredContactRow = document.getElementById('expiredContactRow');
+
 
   if (expiredSec) expiredSec.style.display = 'block';
 
@@ -376,29 +385,28 @@ function showExpiredUI(sid){
   }
 
   // ✅ Show name/phone
-  if (expiredContact) {
-    expiredContact.textContent =
-      (name || phone) ? (name || 'Shared By') : 'Contact information not available.';
-  }
+	if (expiredContactRow) {
+	  if (name || phone) {
+		expiredContactRow.innerHTML = `
+		  <span>${escapeHtml(name || 'Shared By')}</span>
+		  ${phone ? `<span style="opacity:0.7;"> - </span><span style="font-weight:800;">${escapeHtml(phone)}</span>` : ''}
+		  ${
+			phone
+			  ? `<a
+				   href="tel:${escapeHtml(String(phone).trim())}"
+				   title="Call"
+				   style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;"
+				 >
+				   <i class="fa fa-phone" style="color:green;font-size:18px;"></i>
+				 </a>`
+			  : ``
+		  }
+		`;
+	  } else {
+		expiredContactRow.textContent = 'Contact information not available.';
+	  }
+	}
 
-  // ✅ Phone line with icon
-  if (expiredContact2) {
-    if (phone) {
-      expiredContact2.innerHTML = `
-        <span>${escapeHtml(phone)}</span>
-        <a
-          href="tel:${escapeHtml(String(phone).trim())}"
-          title="Call"
-          style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;
-                 margin-left:10px;"
-        >
-          <i class="fa fa-phone" style="color:green;font-size:18px;"></i>
-        </a>
-      `;
-    } else {
-      expiredContact2.textContent = '';
-    }
-  }
 
   // ✅ show page even in expired mode so Ad remains visible
   showContent();
