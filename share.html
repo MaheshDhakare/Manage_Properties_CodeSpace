@@ -247,6 +247,21 @@
 <script>
   function qs(k){ return new URLSearchParams(location.search).get(k); }
 
+	function decodeSlug(s){
+	  return String(s || '')
+		.replace(/\+/g, ' ')
+		.trim();
+	}
+
+	function getUrlContact(){
+	  // ✅ read from URL, not cache
+	  const n = decodeSlug(qs('n'));
+	  const p = decodeSlug(qs('p'));
+	  return { name: n, phone: p };
+	}
+
+  
+
   function escapeHtml(s){
     return String(s||'')
       .replace(/&/g,"&amp;")
@@ -339,9 +354,11 @@
 
     if (expiredSec) expiredSec.style.display = 'block';
 
-    const cached = getCachedShareContact(sid);
-    const name = safeText(cached?.shared_by);
-    const phone = safeText(cached?.shared_contact);
+	// ✅ Take from URL params
+	const fromUrl = getUrlContact();
+	const name = safeText(fromUrl.name);
+	const phone = safeText(fromUrl.phone);
+
 
     if (expiredContact) {
       expiredContact.textContent = (name || phone) ? (name || 'Shared By') : 'Contact information not available.';
