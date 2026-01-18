@@ -330,8 +330,10 @@
   function showExpiredUI(sid){
     // hide property sections
     const title = document.getElementById('title');
+	const metaBlock = document.querySelector('.meta');
     const area = document.getElementById('area');
     const summary = document.getElementById('summary');
+	const summarySection = summary ? summary.closest('section') : null;
     const imgSec = document.getElementById('imgSec');
     const attSec = document.getElementById('attSec');
     const sharedByRow = document.getElementById('sharedByRow');
