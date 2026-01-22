@@ -462,37 +462,59 @@
     return "file";
   }
 
-  function openMediaModal(htmlContent){
-    const mv = document.getElementById("mediaViewer");
-    const body = document.getElementById("mediaViewerBody");
-    if (!mv || !body) return;
-    body.innerHTML = htmlContent;
-    mv.style.display = "grid";
+let mediaViewerOpen = false;
+
+function openMediaModal(htmlContent){
+  const mv = document.getElementById("mediaViewer");
+  const body = document.getElementById("mediaViewerBody");
+  if (!mv || !body) return;
+
+  body.innerHTML = htmlContent;
+  mv.style.display = "grid";
+
+  // ✅ Only push state once
+  if (!mediaViewerOpen){
+    mediaViewerOpen = true;
     history.pushState({ mediaViewer: true }, "");
   }
+}
 
-  function closeMediaModal(fromPop = false){
-    const mv = document.getElementById("mediaViewer");
-    const body = document.getElementById("mediaViewerBody");
-    if (!mv || !body) return;
-    mv.style.display = "none";
-    body.innerHTML = "";
-    if (!fromPop) history.back();
+
+function closeMediaModal(fromPopstate = false){
+  const mv = document.getElementById("mediaViewer");
+  const body = document.getElementById("mediaViewerBody");
+  if (!mv || !body) return;
+
+  mv.style.display = "none";
+  body.innerHTML = "";
+
+  if (mediaViewerOpen && !fromPopstate) {
+    mediaViewerOpen = false;
+    history.back();  // ✅ back removes modal state
+  } else {
+    mediaViewerOpen = false;
   }
+}
 
-  function wireMediaViewer(){
-    const closeBtn = document.getElementById("mediaViewerClose");
-    const mv = document.getElementById("mediaViewer");
-    if (closeBtn) closeBtn.addEventListener("click", ()=>closeMediaModal(false));
-    if (mv) mv.addEventListener("click", (e)=>{ if (e.target === mv) closeMediaModal(false); });
 
-    window.addEventListener("popstate", (e)=>{
-      const mv2 = document.getElementById("mediaViewer");
-      if (mv2 && mv2.style.display === "grid"){
-        closeMediaModal(true);
-      }
-    });
-  }
+function wireMediaViewer(){
+  const closeBtn = document.getElementById("mediaViewerClose");
+  const mv = document.getElementById("mediaViewer");
+
+  if (closeBtn) closeBtn.addEventListener("click", () => closeMediaModal(false));
+
+  if (mv) mv.addEventListener("click", (e)=>{
+    if (e.target === mv) closeMediaModal(false);
+  });
+
+  // ✅ Back button closes Media Viewer (not exit page)
+  window.addEventListener("popstate", () => {
+    if (mediaViewerOpen) {
+      closeMediaModal(true);
+    }
+  });
+}
+
 
   async function openOfflineMedia(url){
     const key = normalizeMediaKey(url);
