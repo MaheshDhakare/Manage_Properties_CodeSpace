@@ -163,27 +163,29 @@
 	#pageContent {
 	  padding-bottom: 70px;
 	}
-	
-	#stickyBanner {
+
+	/* Fixed bar that hugs the safe bottom and stays on screen */
+	#stickyBanner{
 	  position: fixed;
+	  left: 0; right: 0;
 	  bottom: 0;
-	  left: 0;
-	  width: 100%;
-	  z-index: 9999;
+	  height: calc(var(--ad-height) + env(safe-area-inset-bottom));
+	  padding-bottom: env(safe-area-inset-bottom);   /* clears iOS gesture area */
 	  background: #ffffff;
-	  border-top: 1px solid rgba(0,0,0,0.08);
-	  box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+	  border-top: 1px solid #e6eef6;
+	  box-shadow: 0 -4px 12px rgba(2,6,23,0.06);
+	  z-index: 1200; /* below your modal-backdrop (9999), above content */
 	}
 
-	#stickyBanner .sticky-inner {
-	max-width: 720px;
-	margin: 0 auto;
-	padding: 5px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	/* Center inside your site width so it aligns with the app grid */
+	#stickyBanner .ad-inner{
+	  max-width: 1200px;
+	  margin: 0 auto;
+	  height: var(--ad-height);
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
 	}
-
 
   </style>
 </head>
