@@ -645,19 +645,13 @@
 	  if (!locSec || !locBox) return;
 
 	  const rawLoc = safeText(payload.location);
-	  const mapUrl = safeText(payload.location_map_url);
 
 	  if (!rawLoc && !mapUrl) {
 		locSec.style.display = "none";
 		return;
 	  }
 
-	  let finalUrl = mapUrl;
-
-	  // If map URL not provided, build one from text
-	  if (!finalUrl && rawLoc) {
-		finalUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rawLoc)}`;
-	  }
+	  let finalUrl = rawLoc;
 
 	  locBox.innerHTML = `
 		<a href="${escapeHtml(finalUrl)}"
