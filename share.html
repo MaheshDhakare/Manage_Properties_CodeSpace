@@ -225,6 +225,19 @@
           <div id="summary"></div>
         </section>
 
+		<section class="sec" id="locationSec" style="display:none;">
+		  <h2>Location:</h2>
+		  <div id="location"
+			   style="
+				 font-size:14px;
+				 background:#f8fafc;
+				 border:1px solid #e5e7eb;
+				 border-radius:10px;
+				 padding:8px 10px;
+			   ">
+		  </div>
+		</section>
+
         <section class="sec" id="imgSec">
           <h2>Images:</h2>
           <div class="imgGrid" id="imgGrid"></div>
@@ -624,6 +637,40 @@
     document.getElementById('title').textContent = safeText(payload.title);
     document.getElementById('area').textContent  = safeText(payload.area);
     document.getElementById('summary').innerHTML = summaryToBullets(payload.summary);
+	
+	// ===== Location =====
+	(function renderLocation(){
+	  const locSec = document.getElementById('locationSec');
+	  const locBox = document.getElementById('location');
+	  if (!locSec || !locBox) return;
+
+	  const rawLoc = safeText(payload.location);
+	  const mapUrl = safeText(payload.location_map_url);
+
+	  if (!rawLoc && !mapUrl) {
+		locSec.style.display = "none";
+		return;
+	  }
+
+	  let finalUrl = mapUrl;
+
+	  // If map URL not provided, build one from text
+	  if (!finalUrl && rawLoc) {
+		finalUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(rawLoc)}`;
+	  }
+
+	  locBox.innerHTML = `
+		<a href="${escapeHtml(finalUrl)}"
+		   target="_blank"
+		   rel="noopener noreferrer"
+		   style="color:#2563eb;font-weight:700;text-decoration:underline;">
+		  📍 ${escapeHtml(rawLoc || 'View Location')}
+		</a>
+	  `;
+
+	  locSec.style.display = "block";
+	})();
+
 
     // Shared By
     const sb = safeText(payload.shared_by);
