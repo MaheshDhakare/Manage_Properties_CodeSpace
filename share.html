@@ -1,1469 +1,971 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f172a" />
-  <title>PropKola Connect</title>
-  <meta name="description" content="A premium project update portal — share with confidence." />
-
-  <!-- Open Graph (so WhatsApp/email previews look polished) -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" id="ogTitle" content="PropKola Connect" />
-  <meta property="og:description" id="ogDesc" content="View the latest project updates." />
-  <meta property="og:image" id="ogImage" content="" />
-
-  <!-- Fonts: editorial serif for headlines + Inter for UI -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" />
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Shared Property</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    /* ============================================================
-       PropKola Connect — Premium share viewer (share.html)
-       White-label-ready theme: tweak the --pk-* tokens below.
-       ============================================================ */
-
-    :root {
-      /* Brand tokens (override these to white-label per builder) */
-      --pk-bg:        #fafaf7;
-      --pk-bg-soft:   #f3f3ee;
-      --pk-card:      #ffffff;
-      --pk-ink:       #0b1220;
-      --pk-ink-2:     #2a3447;
-      --pk-muted:     #6b7280;
-      --pk-line:      #e8e8e2;
-      --pk-line-2:    #efefe9;
-      --pk-accent:    #0b1220;          /* primary CTA color (deep) */
-      --pk-accent-ink:#ffffff;
-      --pk-tint:      #eef1ff;          /* soft brand wash */
-      --pk-brand:     #3c52d3;          /* PropKola signature blue */
-      --pk-success:   #16a34a;
-      --pk-whatsapp:  #25d366;
-
-      /* Geometry */
-      --pk-r-sm: 12px;
-      --pk-r-md: 18px;
-      --pk-r-lg: 28px;
-      --pk-shadow-xs: 0 1px 2px rgba(15, 23, 42, .04);
-      --pk-shadow-sm: 0 6px 24px rgba(15, 23, 42, .06);
-      --pk-shadow-md: 0 18px 50px rgba(15, 23, 42, .10);
-      --pk-shadow-lg: 0 30px 80px rgba(15, 23, 42, .18);
-
-      /* Type */
-      --pk-display: "Instrument Serif", "Fraunces", Georgia, serif;
-      --pk-sans:    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
-      --pk-ease: cubic-bezier(.22, 1, .36, 1);
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background:#f3f6fb;
+      color:#0f172a;
+    }
+    .wrap{max-width:720px;margin:0 auto;min-height:100vh;padding:12px}
+    .card{
+      background:#fff;
+      border-radius:16px;
+      padding:10px;
+      box-shadow:0 8px 22px rgba(0,0,0,.08);
+    }
+    .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    .pill{
+      padding:6px 10px;border-radius:999px;
+      background:#eff6ff;color:#1d4ed8;font-weight:800;font-size:12px
+    }
+    h1{
+      font-size:20px;
+      margin:6px 0 10px 0;
+      text-transform:capitalize;
+      line-height:1.25;
+    }
+    .meta{
+      font-size:15px;
+      opacity:.95;
+      margin-bottom:6px;
+    }
+    .sec{margin-top:7px}
+    .sec h2{
+      font-size:15px;
+      margin-bottom:8px;
+    }
+    #summary{
+      font-size:14px;
+      line-height:1.55;
+      white-space:pre-wrap;
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      border-radius:10px;
+      padding:5px 5px;
+    }
+    .imgGrid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+    }
+    .imgGrid img{
+      width:100%;
+      height:92px;
+      border-radius:12px;
+      object-fit:cover;
+      border:1px solid #e5e7eb;
+      cursor:pointer;
+      background:#e5e7eb;
+    }
+    .attList{display:flex;flex-direction:column;gap:10px}
+    .att{
+      display:flex;align-items:center;gap:10px;
+      padding:10px;border-radius:14px;border:1px solid #e5e7eb;
+      background:#fff;
+    }
+    .att .name{
+      font-weight:800;
+      font-size:14px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width:55vw;
+    }
+    .att a{
+      margin-left:auto;
+      background:#1d4ed8;color:#fff;
+      padding:9px 12px;border-radius:12px;
+      font-size:13px;text-decoration:none;font-weight:900
     }
 
-    /* ===== Reset ===== */
-    *, *::before, *::after { box-sizing: border-box; }
-    * { margin: 0; padding: 0; }
-    html, body { height: 100%; }
-
-    body {
-      background: var(--pk-bg);
-      color: var(--pk-ink);
-      font-family: var(--pk-sans);
-      font-size: 15px;
-      line-height: 1.55;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      letter-spacing: -0.005em;
-      overflow-x: hidden;
+    /* Fullscreen image viewer */
+    .viewer{
+      position:fixed; inset:0; z-index:99999;
+      background:rgba(0,0,0,.85);
+      display:none;
+      place-items:center;
+      padding:12px;
+    }
+    .viewer img{
+      max-width:100%;
+      max-height:88vh;
+      border-radius:14px;
+      box-shadow:0 18px 55px rgba(0,0,0,.35);
+    }
+    .viewerClose{
+      position:fixed; top:14px; right:14px;
+      background:#fff;
+      border:0;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:900;
+      cursor:pointer;
     }
 
-    img { display: block; max-width: 100%; }
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; color: inherit; cursor: pointer; }
-
-    /* ===== Loader ===== */
-    #pageLoader {
-      position: fixed; inset: 0;
-      background: var(--pk-bg);
-      z-index: 9999;
-      display: grid; place-items: center; align-content: center;
-      gap: 16px;
-      transition: opacity .35s ease;
-    }
-    #pageLoader.hide { opacity: 0; pointer-events: none; }
-    .loader-mark {
-      font-family: var(--pk-display);
-      font-size: 28px;
-      letter-spacing: -0.01em;
-      color: var(--pk-ink);
-    }
-    .loader-mark em { font-style: italic; color: var(--pk-brand); }
-    .loader-bar {
-      width: 120px; height: 2px;
-      background: var(--pk-line);
-      border-radius: 2px;
-      overflow: hidden;
-      position: relative;
-    }
-    .loader-bar::after {
-      content: "";
-      position: absolute; inset: 0;
-      width: 35%;
-      background: var(--pk-ink);
-      border-radius: 2px;
-      animation: pk-slide 1.1s cubic-bezier(.4,0,.2,1) infinite;
-    }
-    @keyframes pk-slide {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(380%); }
+    .empty{
+      opacity:.65;
+      font-size:13px;
+      padding:6px 0;
     }
 
-    /* ===== Page wrap ===== */
-    #pageContent { display: none; }
-    .pk-wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 0 calc(80px + env(safe-area-inset-bottom));
-    }
-
-    /* ===== HERO ===== */
-    .pk-hero {
-      position: relative;
-      width: 100%;
-      min-height: 86vh;
-      max-height: 760px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #1f2937 0%, #0b1220 100%);
-      color: #fff;
-    }
-    .pk-hero__media {
-      position: absolute; inset: 0;
-      z-index: 0;
-    }
-    .pk-hero__media img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transform: scale(1.04);
-      animation: pk-ken-burns 14s ease-out infinite alternate;
-    }
-    @keyframes pk-ken-burns {
-      from { transform: scale(1.04); }
-      to   { transform: scale(1.1); }
-    }
-    .pk-hero__media::after {
-      content: "";
-      position: absolute; inset: 0;
-      background:
-        linear-gradient(180deg, rgba(11,18,32,.10) 0%, rgba(11,18,32,.30) 45%, rgba(11,18,32,.92) 100%);
-    }
-
-    .pk-hero__topbar {
-      position: relative; z-index: 2;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 22px;
-      padding-top: calc(18px + env(safe-area-inset-top));
-    }
-    .pk-hero__brand {
-      display: inline-flex; align-items: center; gap: 10px;
-      color: #fff;
-    }
-    .pk-hero__brand-logo {
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: rgba(255,255,255,.14);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.25);
-      display: grid; place-items: center;
-      font-weight: 800; font-size: 12px;
-      letter-spacing: .04em;
-    }
-    .pk-hero__brand-text {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: .02em;
-      opacity: .92;
-    }
-    .pk-hero__brand-text em {
-      font-style: normal;
-      opacity: .66;
-      margin-left: 4px;
-    }
-
-    .pk-hero__topbar-right {
-      display: inline-flex; gap: 10px;
-    }
-    .pk-pill-glass {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #fff;
-      background: rgba(255,255,255,.12);
-      border: 1px solid rgba(255,255,255,.22);
-      backdrop-filter: blur(10px);
-    }
-    .pk-pill-glass i { font-size: 11px; }
-
-    .pk-hero__content {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      z-index: 2;
-      padding: 28px 24px 36px;
-    }
-    .pk-hero__content-inner {
-      max-width: 1100px; margin: 0 auto;
-    }
-
-    .pk-hero__badges {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin-bottom: 16px;
-      animation: pk-fade-up .9s var(--pk-ease) .1s both;
-    }
-    .pk-hero__title {
-      font-family: var(--pk-display);
-      font-weight: 400;
-      font-size: clamp(34px, 6.4vw, 64px);
-      line-height: 1.02;
-      letter-spacing: -0.02em;
-      max-width: 18ch;
-      animation: pk-fade-up 1s var(--pk-ease) .15s both;
-    }
-    .pk-hero__title em { font-style: italic; opacity: .92; }
-
-    .pk-hero__location {
-      margin-top: 14px;
-      font-size: 15px;
-      opacity: .92;
-      display: inline-flex; align-items: center; gap: 8px;
-      animation: pk-fade-up 1.05s var(--pk-ease) .2s both;
-    }
-    .pk-hero__location i { font-size: 13px; opacity: .85; }
-
-    .pk-hero__scroll-hint {
-      position: absolute;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 3;
-      width: 28px; height: 44px;
-      border-radius: 999px;
-      border: 1.5px solid rgba(255,255,255,.55);
-      display: none;
-      align-items: flex-start; justify-content: center;
-      pointer-events: none;
-    }
-    .pk-hero__scroll-hint::before {
-      content: "";
-      width: 3px; height: 7px;
-      background: rgba(255,255,255,.85);
-      border-radius: 3px;
-      margin-top: 8px;
-      animation: pk-bounce 1.6s ease infinite;
-    }
-    @keyframes pk-bounce {
-      0%, 100% { transform: translateY(0);   opacity: 1; }
-      50%      { transform: translateY(10px); opacity: .3; }
-    }
-    @keyframes pk-fade-up {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ===== Section base ===== */
-    .pk-section {
-      padding: 56px 22px 0;
-    }
-    .pk-section__head {
-      max-width: 1100px;
-      margin: 0 auto 22px;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .pk-eyebrow {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-      color: var(--pk-muted);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .pk-eyebrow::before {
-      content: "";
-      display: inline-block;
-      width: 18px; height: 1px;
-      background: var(--pk-ink);
-      opacity: .55;
-    }
-    .pk-section__title {
-      font-family: var(--pk-display);
-      font-weight: 400;
-      font-size: clamp(26px, 3.2vw, 36px);
-      line-height: 1.1;
-      letter-spacing: -0.01em;
-      color: var(--pk-ink);
-      margin-top: 4px;
-    }
-    .pk-section__title em { font-style: italic; }
-
-    .pk-section__meta {
-      font-size: 12.5px;
-      color: var(--pk-muted);
-    }
-
-    .pk-section__body {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    /* ===== Quick action bar (desktop) ===== */
-    .pk-actions {
-      max-width: 1100px;
-      margin: -36px auto 0;
-      position: relative;
-      z-index: 4;
-      padding: 0 22px;
-    }
-    .pk-actions__inner {
-      background: var(--pk-card);
-      border: 1px solid var(--pk-line);
-      border-radius: var(--pk-r-lg);
-      box-shadow: var(--pk-shadow-md);
-      padding: 14px;
-      display: grid;
-      grid-template-columns: 1fr auto auto auto;
-      gap: 10px;
-      align-items: center;
-    }
-    .pk-actions__contact {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 4px 8px;
-    }
-    .pk-actions__avatar {
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--pk-brand), #6478ff);
-      color: #fff;
-      display: grid; place-items: center;
-      font-weight: 700; font-size: 16px;
-      letter-spacing: .02em;
-      flex-shrink: 0;
-    }
-    .pk-actions__contact-info { min-width: 0; }
-    .pk-actions__contact-name {
-      font-weight: 700;
-      font-size: 14.5px;
-      color: var(--pk-ink);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .pk-actions__contact-role {
-      font-size: 12px;
-      color: var(--pk-muted);
-    }
-
-    .pk-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 18px;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 14px;
-      letter-spacing: -0.005em;
-      cursor: pointer;
-      transition: transform .18s var(--pk-ease), background .18s, color .18s, border-color .18s, box-shadow .18s;
-      white-space: nowrap;
-      text-decoration: none;
-    }
-    .pk-cta:hover { transform: translateY(-1px); }
-    .pk-cta:active { transform: translateY(0); }
-    .pk-cta i { font-size: 13px; }
-
-    .pk-cta--primary {
-      background: var(--pk-accent);
-      color: var(--pk-accent-ink);
-    }
-    .pk-cta--primary:hover { background: #1c2840; }
-
-    .pk-cta--ghost {
-      background: var(--pk-bg-soft);
-      color: var(--pk-ink);
-      border-color: var(--pk-line);
-    }
-    .pk-cta--ghost:hover { background: var(--pk-card); border-color: #d8d8d0; }
-
-    .pk-cta--whatsapp {
-      background: var(--pk-whatsapp);
-      color: #fff;
-    }
-    .pk-cta--whatsapp:hover { background: #1ebe5b; }
-
-    .pk-cta--icon {
-      width: 44px; height: 44px;
-      padding: 0;
-      border-radius: 50%;
-    }
-
-    /* ===== Overview card ===== */
-    .pk-overview {
-      background: var(--pk-card);
-      border: 1px solid var(--pk-line);
-      border-radius: var(--pk-r-lg);
-      padding: 32px 32px;
-      box-shadow: var(--pk-shadow-xs);
-    }
-    .pk-overview__text {
-      font-size: 17px;
-      line-height: 1.7;
-      color: var(--pk-ink-2);
-      max-width: 65ch;
-    }
-
-    /* ===== Specs grid ===== */
-    .pk-specs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1px;
-      background: var(--pk-line);
-      border: 1px solid var(--pk-line);
-      border-radius: var(--pk-r-lg);
-      overflow: hidden;
-    }
-    .pk-spec {
-      background: var(--pk-card);
-      padding: 22px 22px;
-    }
-    .pk-spec__label {
-      font-size: 11.5px;
-      font-weight: 600;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--pk-muted);
-    }
-    .pk-spec__value {
-      margin-top: 8px;
-      font-family: var(--pk-display);
-      font-weight: 400;
-      font-size: 22px;
-      line-height: 1.2;
-      color: var(--pk-ink);
-      letter-spacing: -0.005em;
-    }
-
-    /* ===== Gallery ===== */
-    .pk-gallery {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 8px;
-      border-radius: var(--pk-r-lg);
-      overflow: hidden;
-      max-height: 540px;
-    }
-    .pk-gallery__cell {
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      background: var(--pk-bg-soft);
-    }
-    .pk-gallery__cell:nth-child(1) {
-      grid-row: 1 / span 2;
-    }
-    .pk-gallery__cell img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transition: transform .55s var(--pk-ease);
-    }
-    .pk-gallery__cell:hover img { transform: scale(1.03); }
-    .pk-gallery__more {
-      position: absolute;
-      inset: 0;
-      background: rgba(11, 18, 32, .55);
-      color: #fff;
-      display: grid; place-items: center;
-      font-weight: 600;
-      font-size: 14px;
-      letter-spacing: -0.005em;
-      backdrop-filter: blur(2px);
-    }
-    .pk-gallery__more i { margin-right: 8px; }
-
-    /* Mobile gallery: edge-to-edge swipe carousel */
-    .pk-gallery-mobile {
-      display: none;
-      gap: 10px;
-      padding: 0 22px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .pk-gallery-mobile::-webkit-scrollbar { display: none; }
-    .pk-gallery-mobile__cell {
-      flex: 0 0 84%;
-      aspect-ratio: 4 / 3;
-      border-radius: var(--pk-r-md);
-      overflow: hidden;
-      scroll-snap-align: start;
-      background: var(--pk-bg-soft);
-      cursor: pointer;
-    }
-    .pk-gallery-mobile__cell img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-    }
-
-    /* ===== Timeline ===== */
-    .pk-timeline {
-      position: relative;
-      padding-left: 28px;
-    }
-    .pk-timeline::before {
-      content: "";
-      position: absolute;
-      top: 8px; bottom: 8px; left: 9px;
-      width: 1.5px;
-      background: linear-gradient(180deg, var(--pk-line), transparent);
-    }
-    .pk-tl {
-      position: relative;
-      margin-bottom: 24px;
-    }
-    .pk-tl::before {
-      content: "";
-      position: absolute;
-      top: 22px; left: -22px;
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: var(--pk-card);
-      border: 2.5px solid var(--pk-ink);
-      box-shadow: 0 0 0 5px var(--pk-bg);
-    }
-    .pk-tl__date {
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .03em;
-      color: var(--pk-muted);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .pk-tl__card {
-      background: var(--pk-card);
-      border: 1px solid var(--pk-line);
-      border-radius: var(--pk-r-md);
-      padding: 20px;
-      box-shadow: var(--pk-shadow-xs);
-      transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease;
-    }
-    .pk-tl__card:hover {
-      box-shadow: var(--pk-shadow-sm);
-      transform: translateY(-1px);
-      border-color: #d8d8d0;
-    }
-    .pk-tl__head {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-    .pk-tl__icon {
-      flex-shrink: 0;
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      background: var(--pk-bg-soft);
-      display: grid; place-items: center;
-      font-size: 18px;
-      color: var(--pk-ink);
-    }
-    .pk-tl__icon.is-pdf {
-      background: #fef2f2;
-      color: #dc2626;
-    }
-    .pk-tl__icon.is-image {
-      background: var(--pk-tint);
-      color: var(--pk-brand);
-    }
-    .pk-tl__title {
-      flex: 1;
-      min-width: 0;
-    }
-    .pk-tl__title h4 {
-      font-family: var(--pk-display);
-      font-weight: 400;
-      font-size: 22px;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      color: var(--pk-ink);
-      margin-bottom: 4px;
-    }
-    .pk-tl__title small {
-      font-size: 12.5px;
-      color: var(--pk-muted);
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .pk-tl__desc {
-      font-size: 14.5px;
-      color: var(--pk-ink-2);
-      line-height: 1.6;
-      margin: 4px 0 16px;
-    }
-    .pk-tl__preview {
-      width: 100%;
-      max-height: 280px;
-      object-fit: cover;
-      border-radius: var(--pk-r-sm);
-      margin-bottom: 16px;
-      cursor: pointer;
-    }
-    .pk-tl__actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    /* ===== Empty / expired states ===== */
-    .pk-empty {
-      text-align: center;
-      padding: 48px 24px;
-      color: var(--pk-muted);
-      font-size: 14.5px;
-      background: var(--pk-card);
-      border: 1px dashed var(--pk-line);
-      border-radius: var(--pk-r-md);
-    }
-    .pk-empty i { font-size: 28px; opacity: .4; margin-bottom: 10px; display: block; }
-
-    .pk-expired {
-      display: none;
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 80px 28px;
-      text-align: center;
-    }
-    .pk-expired__icon {
-      font-size: 36px;
-      color: var(--pk-muted);
-      opacity: .55;
-      margin-bottom: 16px;
-    }
-    .pk-expired h2 {
-      font-family: var(--pk-display);
-      font-size: 32px;
-      letter-spacing: -0.01em;
-      color: var(--pk-ink);
-      margin-bottom: 8px;
-    }
-    .pk-expired p {
-      color: var(--pk-muted);
-      font-size: 14.5px;
-    }
-
-    /* ===== Footer ===== */
-    .pk-foot {
-      max-width: 1100px;
-      margin: 80px auto 24px;
-      padding: 28px 22px 0;
-      border-top: 1px solid var(--pk-line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      color: var(--pk-muted);
-      font-size: 12.5px;
-      flex-wrap: wrap;
-    }
-    .pk-foot__brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--pk-ink-2);
-      font-weight: 600;
-    }
-    .pk-foot__brand .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--pk-brand);
-    }
-
-    /* ===== Sticky mobile action bar ===== */
-    .pk-mobile-bar {
-      display: none;
-      position: fixed;
-      left: 12px; right: 12px;
-      bottom: calc(12px + env(safe-area-inset-bottom));
-      z-index: 800;
-      background: rgba(255,255,255,.85);
-      backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(15, 23, 42, .08);
-      border-radius: 999px;
-      box-shadow: 0 12px 40px rgba(15, 23, 42, .14);
+    .ad-placeholder{
+      border: 1px dashed #cbd5e1;
+      border-radius: 14px;
       padding: 8px;
-      gap: 6px;
+      background: #f8fafc;
     }
-    .pk-mobile-bar .pk-cta {
-      flex: 1;
-      padding: 12px 12px;
-      font-size: 13.5px;
+    .ad-badge{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      background:#111827;
+      color:#fff;
+      margin-bottom:8px;
     }
-    .pk-mobile-bar .pk-cta--icon {
-      flex: 0 0 auto;
-      width: 44px; height: 44px;
-    }
+    .ad-title{font-weight:900;font-size:14px;margin-bottom:4px;}
+    .ad-desc{opacity:.75;font-size:13px;line-height:1.35;}
 
-    /* ===== Lightbox ===== */
-    .pk-lightbox {
-      position: fixed; inset: 0;
-      background: rgba(11, 18, 32, .94);
-      z-index: 99999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+    /* Loader overlay + hide content initially */
+    #pageLoader{
+      position:fixed;
+      inset:0;
+      z-index:999999;
+      background:#f3f6fb;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:10px;
     }
-    .pk-lightbox.open { display: flex; }
-    .pk-lightbox__img {
-      max-width: 100%; max-height: 100%;
-      object-fit: contain;
-      border-radius: 12px;
-      box-shadow: 0 30px 80px rgba(0,0,0,.6);
-      animation: pk-lightbox-in .35s var(--pk-ease);
+    .loaderSpin{
+      width:42px;
+      height:42px;
+      border:4px solid #cbd5e1;
+      border-top-color:#1d4ed8;
+      border-radius:50%;
+      animation:spin 0.9s linear infinite;
     }
-    @keyframes pk-lightbox-in {
-      from { opacity: 0; transform: scale(.96); }
-      to   { opacity: 1; transform: scale(1); }
+    @keyframes spin{
+      from{transform:rotate(0deg)}
+      to{transform:rotate(360deg)}
     }
-    .pk-lightbox__close {
-      position: absolute;
-      top: calc(20px + env(safe-area-inset-top));
-      right: 20px;
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      backdrop-filter: blur(8px);
-      display: grid; place-items: center;
-      font-size: 14px;
-    }
-    .pk-lightbox__nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 44px; height: 44px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      backdrop-filter: blur(8px);
-      display: grid; place-items: center;
-      font-size: 14px;
-    }
-    .pk-lightbox__nav.prev { left: 20px; }
-    .pk-lightbox__nav.next { right: 20px; }
-    .pk-lightbox__counter {
-      position: absolute;
-      bottom: calc(20px + env(safe-area-inset-bottom));
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.85);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: .02em;
-    }
+    #pageContent{ display:none; }
 
-    /* ===== Responsive ===== */
-    @media (min-width: 720px) {
-      .pk-hero__scroll-hint { display: flex; }
-    }
+	#pageContent {
+	  padding-bottom: 70px;
+	}
 
-    @media (max-width: 760px) {
-      .pk-hero { min-height: 78vh; }
-      .pk-hero__topbar { padding: 14px 18px; padding-top: calc(14px + env(safe-area-inset-top)); }
-      .pk-hero__content { padding: 24px 20px 32px; }
-      .pk-hero__title { font-size: clamp(34px, 9vw, 52px); }
+	/* Fixed bar that hugs the safe bottom and stays on screen */
+	#stickyBanner{
+	  position: fixed;
+	  left: 0; right: 0;
+	  bottom: 0;
+	  height: calc(var(--ad-height) + env(safe-area-inset-bottom));
+	  padding-bottom: env(safe-area-inset-bottom);   /* clears iOS gesture area */
+	  background: #ffffff;
+	  border-top: 1px solid #e6eef6;
+	  box-shadow: 0 -4px 12px rgba(2,6,23,0.06);
+	  z-index: 1200; /* below your modal-backdrop (9999), above content */
+	}
 
-      .pk-section { padding: 44px 20px 0; }
-      .pk-actions { padding: 0 16px; margin-top: -28px; }
-      .pk-actions__inner {
-        grid-template-columns: 1fr;
-        padding: 16px;
-      }
-      .pk-actions__contact { padding: 0 4px 4px; }
-      .pk-actions .pk-cta { width: 100%; justify-content: center; }
-      .pk-actions .pk-cta--icon { display: none; }
+	/* Center inside your site width so it aligns with the app grid */
+	#stickyBanner .sticky-inner{
+	  max-width: 1200px;
+	  margin: 0 auto;
+	  height: var(--ad-height);
+	  display: flex;
+	  align-items: center;
+	  justify-content: center;
+	}
 
-      .pk-overview { padding: 24px 20px; border-radius: var(--pk-r-md); }
-      .pk-overview__text { font-size: 15.5px; }
-
-      .pk-gallery { display: none; }
-      .pk-gallery-mobile { display: flex; padding: 0 20px; }
-
-      .pk-timeline { padding-left: 22px; }
-      .pk-tl::before { left: -19px; }
-      .pk-tl__head { gap: 12px; }
-      .pk-tl__icon { width: 42px; height: 42px; font-size: 16px; }
-      .pk-tl__title h4 { font-size: 18px; }
-      .pk-tl__card { padding: 16px; }
-
-      .pk-mobile-bar { display: flex; }
-      .pk-foot { flex-direction: column; align-items: flex-start; gap: 8px; }
-    }
-
-    @media (max-width: 480px) {
-      .pk-hero__brand-text em { display: none; }
-      .pk-pill-glass { padding: 6px 10px; font-size: 11px; }
-    }
-
-    /* Hide desktop bar items only when also showing mobile bar */
-    @media (max-width: 760px) {
-      .pk-hide-mobile { display: none !important; }
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- ============== Loader ============== -->
+  <!-- Loader -->
   <div id="pageLoader">
-    <div class="loader-mark">PropKola <em>Connect</em></div>
-    <div class="loader-bar"></div>
+    <div class="loaderSpin"></div>
+	<div id="loaderTitle" style="font-weight:900;font-family:system-ui;">Loading property...</div>
+	<!-- <div id="loaderSub" style="opacity:.7;font-size:13px;">Please wait</div> -->
+	
   </div>
 
-  <!-- ============== Expired / not-found ============== -->
-  <section class="pk-expired" id="expiredSection">
-    <div class="pk-expired__icon"><i class="fa-regular fa-circle-question"></i></div>
-    <h2>Link not available</h2>
-    <p id="expiredMsg">This share link is no longer active or has been removed by the owner.</p>
-  </section>
-
-  <!-- ============== Page ============== -->
+  <!-- Content -->
   <div id="pageContent">
-
-    <!-- HERO -->
-    <header class="pk-hero" id="heroBanner">
-      <div class="pk-hero__media" id="heroMedia"></div>
-
-      <div class="pk-hero__topbar">
-        <div class="pk-hero__brand">
-          <div class="pk-hero__brand-logo">PK</div>
-          <div class="pk-hero__brand-text">PropKola <em>Connect</em></div>
+    <div class="wrap">
+      <main class="card">
+        <div class="row">
+          <div class="pill" id="typePill" style="display:none;"></div>
+          <div class="pill" id="catPill" style="display:none;"></div>
         </div>
-        <div class="pk-hero__topbar-right" id="heroPills">
-          <span class="pk-pill-glass" id="updatedPill" style="display:none;">
-            <i class="fa-regular fa-clock"></i><span id="updatedText"></span>
-          </span>
-        </div>
-      </div>
 
-      <div class="pk-hero__content">
-        <div class="pk-hero__content-inner">
-          <div class="pk-hero__badges" id="heroBadges"></div>
-          <h1 class="pk-hero__title" id="pTitle"></h1>
-          <div class="pk-hero__location" id="pLocationRow" style="display:none;">
-            <i class="fa-solid fa-location-dot"></i>
-            <span id="pLocation"></span>
-          </div>
-        </div>
-      </div>
+        <h1 id="title"></h1>
 
-      <div class="pk-hero__scroll-hint"></div>
-    </header>
+        <div class="meta">
+          <div><strong>Area:</strong> <span id="area"></span></div>
 
-    <!-- ACTION BAR -->
-    <div class="pk-actions" id="pActionBar" style="display:none;">
-      <div class="pk-actions__inner">
-        <div class="pk-actions__contact">
-          <div class="pk-actions__avatar" id="pSharedAvatar">·</div>
-          <div class="pk-actions__contact-info">
-            <div class="pk-actions__contact-name" id="pSharedName">—</div>
-            <div class="pk-actions__contact-role">Project contact</div>
+          <div id="sharedByRow" style="display:none;margin-top:7px;">
+            <strong>Shared By:</strong>
+            <span id="sharedBy" style="display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;"></span>
           </div>
         </div>
 
-        <a class="pk-cta pk-cta--primary" id="btnCall" href="#" style="display:none;">
-          <i class="fa-solid fa-phone"></i>
-          <span>Call</span>
-        </a>
-        <a class="pk-cta pk-cta--whatsapp" id="btnWhatsapp" href="#" target="_blank" rel="noopener" style="display:none;">
-          <i class="fa-brands fa-whatsapp"></i>
-          <span>WhatsApp</span>
-        </a>
-        <button class="pk-cta pk-cta--ghost pk-cta--icon pk-hide-mobile" id="btnShareLink" aria-label="Copy link">
-          <i class="fa-regular fa-copy"></i>
-        </button>
-      </div>
+        <section class="sec">
+          <h2>Summary:</h2>
+          <div id="summary"></div>
+        </section>
+
+		<section class="sec" id="locationSec" style="display:none;">
+		  <h2>Location:</h2>
+		  <div id="location"
+			   style="
+				 font-size:14px;
+				 background:#f8fafc;
+				 border:1px solid #e5e7eb;
+				 border-radius:10px;
+				 padding:8px 10px;
+			   ">
+		  </div>
+		</section>
+
+        <section class="sec" id="imgSec">
+          <h2>Images:</h2>
+          <div class="imgGrid" id="imgGrid"></div>
+          <div class="empty" id="imgEmpty" style="display:none;">No images.</div>
+        </section>
+
+        <section class="sec" id="attSec">
+          <h2>Files:</h2>
+          <div class="attList" id="attList"></div>
+          <div class="empty" id="attEmpty" style="display:none;">No files.</div>
+        </section>
+      </main>
+
+      <!-- Expired UI -->
+      <section class="sec" id="expiredSec" style="display:none;">
+        <div class="card" style="padding:14px;border-radius:16px;">
+          <div style="font-weight:900;font-size:16px;margin-bottom:10px;">
+            This shared link is expired.
+          </div>
+
+          <div id="expiredTitle"
+               style="margin-top:6px;font-weight:900;font-size:16px;text-transform:capitalize;">
+          </div>
+
+          <div id="expiredHint" style="opacity:.85;font-size:14px;line-height:1.45;margin-top:10px;">
+            To get details about the property you can contact:
+          </div>
+
+          <div id="expiredContactRow"
+               style="margin-top:10px;font-weight:900;font-size:15px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          </div>
+        </div>
+      </section>
+
+
+<!-- 		<section class="sec" id="adSec">
+		  <div class="ad-placeholder">
+			<div class="ad-badge">Ad</div>
+			<div id="container-358ccab821f56114a2734139c41efd06"></div>
+		  </div>
+		</section> -->
+
     </div>
-
-    <!-- OVERVIEW -->
-    <section class="pk-section" id="pDescriptionSec" style="display:none;">
-      <div class="pk-section__head">
-        <div>
-          <span class="pk-eyebrow">Overview</span>
-          <h2 class="pk-section__title">About <em>this project</em></h2>
-        </div>
-      </div>
-      <div class="pk-section__body">
-        <div class="pk-overview">
-          <p class="pk-overview__text" id="pDescription"></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- GALLERY -->
-    <section class="pk-section" id="pGallerySec" style="display:none;">
-      <div class="pk-section__head">
-        <div>
-          <span class="pk-eyebrow">Gallery</span>
-          <h2 class="pk-section__title">A closer <em>look</em></h2>
-        </div>
-        <div class="pk-section__meta" id="pGalleryMeta"></div>
-      </div>
-      <div class="pk-section__body">
-        <div class="pk-gallery" id="pGallery"></div>
-        <div class="pk-gallery-mobile" id="pGalleryMobile"></div>
-      </div>
-    </section>
-
-    <!-- TIMELINE -->
-    <section class="pk-section" id="pTimelineSec" style="display:none;">
-      <div class="pk-section__head">
-        <div>
-          <span class="pk-eyebrow">Timeline</span>
-          <h2 class="pk-section__title">Project <em>updates</em></h2>
-        </div>
-        <div class="pk-section__meta" id="pTimelineMeta"></div>
-      </div>
-      <div class="pk-section__body">
-        <div class="pk-timeline" id="pTimeline"></div>
-      </div>
-    </section>
-
-    <!-- LOCATION -->
-    <section class="pk-section" id="pLocationSec" style="display:none;">
-      <div class="pk-section__head">
-        <div>
-          <span class="pk-eyebrow">Location</span>
-          <h2 class="pk-section__title">Where it <em>is</em></h2>
-        </div>
-      </div>
-      <div class="pk-section__body">
-        <div class="pk-overview" style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
-          <div>
-            <div style="font-family:var(--pk-display);font-size:22px;line-height:1.2;letter-spacing:-0.01em;color:var(--pk-ink);"
-                 id="pLocationDetailed"></div>
-          </div>
-          <a class="pk-cta pk-cta--ghost" id="btnViewMap" target="_blank" rel="noopener">
-            <i class="fa-solid fa-map-location-dot"></i>
-            <span>View on map</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="pk-foot">
-      <div class="pk-foot__brand">
-        <span class="dot"></span>
-        Powered by PropKola Connect
-      </div>
-      <div>One link. Always up to date.</div>
-    </footer>
-
   </div>
 
-  <!-- ============== Mobile sticky bar ============== -->
-  <div class="pk-mobile-bar" id="pMobileBar">
-    <a class="pk-cta pk-cta--primary" id="mbCall" href="#" style="display:none;">
-      <i class="fa-solid fa-phone"></i>
-      <span>Call</span>
-    </a>
-    <a class="pk-cta pk-cta--whatsapp" id="mbWa" href="#" target="_blank" rel="noopener" style="display:none;">
-      <i class="fa-brands fa-whatsapp"></i>
-      <span>WhatsApp</span>
-    </a>
-    <button class="pk-cta pk-cta--ghost pk-cta--icon" id="mbShare" aria-label="Share">
-      <i class="fa-solid fa-share-nodes"></i>
-    </button>
+  <!-- Fullscreen image viewer -->
+  <div class="viewer" id="viewer">
+    <button class="viewerClose" id="viewerClose">✕</button>
+    <img id="viewerImg" src="" alt="preview"/>
   </div>
 
-  <!-- ============== Lightbox ============== -->
-  <div class="pk-lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
-    <button class="pk-lightbox__close" id="lbClose" aria-label="Close">
-      <i class="fa-solid fa-xmark"></i>
-    </button>
-    <button class="pk-lightbox__nav prev" id="lbPrev" aria-label="Previous">
-      <i class="fa-solid fa-chevron-left"></i>
-    </button>
-    <img class="pk-lightbox__img" id="lbImg" src="" alt="" />
-    <button class="pk-lightbox__nav next" id="lbNext" aria-label="Next">
-      <i class="fa-solid fa-chevron-right"></i>
-    </button>
-    <div class="pk-lightbox__counter" id="lbCounter"></div>
+  <!-- Media Player Modal -->
+  <div class="viewer" id="mediaViewer" style="display:none;">
+    <div id="mediaViewerBody" style="width:min(100%,720px);">
+      <!-- injected -->
+    </div>
   </div>
 
 
-  <!-- ============================================================
-       Inline rendering script. Self-contained: no dependencies.
-       Reads ?pid=<projectId> and fetches:
-         <SUPABASE_URL>/storage/v1/object/public/shares/project_<pid>.json
-       Then renders the premium UI above.
-       ============================================================ -->
-  <script>
-  (function () {
-    "use strict";
+<script>
+  function qs(k){ return new URLSearchParams(location.search).get(k); }
 
-    // ---- Backend constants. Mirrors section_details.js. ----
-    const SUPABASE_URL = "https://mxuknvleveqqybhbhwnv.supabase.co";
-    const SHARES_BUCKET = "shares";
+  function decodeSlug(s){
+    return String(s || '').replace(/\+/g, ' ').trim();
+  }
 
-    // ---- Helpers ----
-    const $ = (id) => document.getElementById(id);
-    function escapeHtml(s) {
-      return String(s ?? "")
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-    }
-    function qs(k) { return new URLSearchParams(location.search).get(k); }
+  function unslugText(s){
+    return String(s || '')
+      .replace(/-/g, ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim()
+      .toLowerCase()
+      .replace(/\b\w/g, c => c.toUpperCase());
+  }
 
-    function fmtMonthYear(iso) {
-      if (!iso) return "";
-      try {
-        const d = new Date(iso);
-        return d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-      } catch { return ""; }
-    }
-    function fmtDayMonthYear(iso) {
-      if (!iso) return "";
-      try {
-        const d = new Date(iso);
-        return d.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
-      } catch { return ""; }
-    }
-    function fmtRelativeFromNow(iso) {
-      if (!iso) return "";
-      try {
-        const d = new Date(iso);
-        const diff = (Date.now() - d.getTime()) / 1000;
-        if (diff < 60) return "Just now";
-        if (diff < 3600) return Math.floor(diff / 60) + "m ago";
-        if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
-        if (diff < 604800) return Math.floor(diff / 86400) + "d ago";
-        return d.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
-      } catch { return ""; }
-    }
+  function getUrlContact(){
+    const t = unslugText(decodeSlug(qs('t')));
+    const n = unslugText(decodeSlug(qs('n')));
+    const p = decodeSlug(qs('p'));
+    return { title: t, name: n, phone: p };
+  }
 
-    function isPdfFromName(name) { return /\.pdf(\?|$)/i.test(String(name || "")); }
-    function isImageFromName(name) {
-      return /\.(png|jpe?g|webp|gif|bmp|svg|heic|avif)(\?|$)/i.test(String(name || ""));
-    }
+  function escapeHtml(s){
+    return String(s||'')
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&#039;");
+  }
 
-    function initialsFor(name) {
-      const s = String(name || "").trim();
-      if (!s) return "·";
-      const parts = s.split(/\s+/);
-      const a = parts[0]?.[0] || "";
-      const b = parts.length > 1 ? parts[parts.length - 1][0] : "";
-      return (a + b).toUpperCase() || s[0].toUpperCase();
-    }
+  function summaryToBullets(summary) {
+    let items = [];
+    if (Array.isArray(summary)) items = summary.map(s => String(s));
+    else if (typeof summary === 'string') items = summary.split(/\r?\n/);
+    else if (summary && typeof summary === 'object') items = Object.values(summary).map(v => String(v));
 
-    function normalizePhone(raw) {
-      if (!raw) return "";
-      const digits = String(raw).replace(/[^\d+]/g, "");
-      if (!digits) return "";
-      // If it starts with + use as-is. If 10 digits, assume India (+91).
-      if (digits.startsWith("+")) return digits;
-      if (digits.length === 10) return "+91" + digits;
-      return digits;
-    }
+    items = items
+      .map(s => String(s || '').replace(/\u00A0/g, ' ').replace(/\t/g, ' ').trim())
+      .filter(Boolean)
+      .map(s => s.replace(/^[\s•\-\*\u2022]+/, '').trim());
 
-    function publicJsonUrl(pid) {
-      return `${SUPABASE_URL}/storage/v1/object/public/${SHARES_BUCKET}/${encodeURIComponent("project_" + pid + ".json")}`;
-    }
+    if (!items.length) return '';
+    return (
+      `<ul style="margin:0; padding-left:20px; list-style-type:disc;">` +
+      items.map(line => `<li style="margin:0 0 3px 0;">${escapeHtml(line)}</li>`).join('') +
+      `</ul>`
+    );
+  }
 
-    // ---- Show / hide helpers ----
-    function showExpired(msg) {
-      $("pageLoader").classList.add("hide");
-      $("pageContent").style.display = "none";
-      const e = $("expiredSection");
-      e.style.display = "block";
-      if (msg) $("expiredMsg").textContent = msg;
-      // Pull loader off the DOM after fade
-      setTimeout(() => { $("pageLoader").style.display = "none"; }, 400);
-    }
-    function showPage() {
-      $("pageLoader").classList.add("hide");
-      $("pageContent").style.display = "block";
-      setTimeout(() => { $("pageLoader").style.display = "none"; }, 400);
-    }
+  function safeText(v){ return String(v||'').trim(); }
 
-    // ---- Lightbox ----
-    let lbList = [];
-    let lbIndex = 0;
+  function showContent(){
+    const ld = document.getElementById('pageLoader');
+    const ct = document.getElementById('pageContent');
+    if (ld) ld.style.display = "none";
+    if (ct) ct.style.display = "block";
+  }
 
-    function lbOpen(list, index) {
-      lbList = list || [];
-      lbIndex = Math.max(0, Math.min(index || 0, lbList.length - 1));
-      lbRender();
-      $("lightbox").classList.add("open");
-      document.body.style.overflow = "hidden";
-    }
-    function lbClose() {
-      $("lightbox").classList.remove("open");
-      document.body.style.overflow = "";
-      $("lbImg").src = "";
-    }
-    function lbRender() {
-      $("lbImg").src = lbList[lbIndex] || "";
-      $("lbCounter").textContent = lbList.length > 1
-        ? `${lbIndex + 1} / ${lbList.length}` : "";
-      $("lbPrev").style.display = lbList.length > 1 ? "" : "none";
-      $("lbNext").style.display = lbList.length > 1 ? "" : "none";
-    }
-    function lbStep(n) {
-      if (!lbList.length) return;
-      lbIndex = (lbIndex + n + lbList.length) % lbList.length;
-      lbRender();
-    }
-    $("lbClose").addEventListener("click", lbClose);
-    $("lbPrev").addEventListener("click", () => lbStep(-1));
-    $("lbNext").addEventListener("click", () => lbStep(1));
-    $("lightbox").addEventListener("click", (e) => {
-      if (e.target.id === "lightbox") lbClose();
-    });
-    document.addEventListener("keydown", (e) => {
-      if (!$("lightbox").classList.contains("open")) return;
-      if (e.key === "Escape") lbClose();
-      if (e.key === "ArrowLeft") lbStep(-1);
-      if (e.key === "ArrowRight") lbStep(1);
-    });
-
-    // Touch swipe inside lightbox
-    let touchX = 0;
-    $("lightbox").addEventListener("touchstart", (e) => {
-      touchX = e.changedTouches[0].clientX;
-    }, { passive: true });
-    $("lightbox").addEventListener("touchend", (e) => {
-      const dx = e.changedTouches[0].clientX - touchX;
-      if (Math.abs(dx) > 50) lbStep(dx > 0 ? -1 : 1);
-    }, { passive: true });
-
-    // ---- Render ----
-    function render(payload) {
-      // ---- Title & document meta ----
-      const title = payload.title || "Project update";
-      document.title = title + " · PropKola Connect";
-      $("ogTitle").setAttribute("content", title);
-      $("ogDesc").setAttribute("content", payload.description || "View the latest project updates.");
-      if (payload.banner_url) $("ogImage").setAttribute("content", payload.banner_url);
-
-      // ---- Hero ----
-      $("pTitle").textContent = title;
-
-      const heroMedia = $("heroMedia");
-      if (payload.banner_url) {
-        heroMedia.innerHTML = `<img src="${escapeHtml(payload.banner_url)}" alt="">`;
-      } else {
-        // Fallback gradient stays as-is; nothing to inject
+  // Ask browser for persistent storage
+  async function requestPersistence(){
+    try{
+      if (navigator.storage && navigator.storage.persist){
+        return await navigator.storage.persist();
       }
+    }catch(e){}
+    return false;
+  }
 
-      // Updated pill
-      if (payload.updated_at) {
-        $("updatedPill").style.display = "";
-        $("updatedText").textContent = "Updated " + fmtRelativeFromNow(payload.updated_at);
-      }
+  // IndexedDB store (ALL files)
+  const MEDIA_DB = "propcola_share_media_v1";
+  const MEDIA_STORE = "files";
 
-      // Badges (status / location summary)
-      const badges = [];
-      if (payload.location) {
-        // Use first chunk before "—" or "," as a category-ish badge
-        const firstChunk = String(payload.location).split(/[—,–]/)[0].trim();
-        if (firstChunk && firstChunk.length < 36) {
-          badges.push({ icon: "fa-tag", text: firstChunk });
+  function normalizeMediaKey(url){
+    try{
+      const u = new URL(url);
+      return u.origin + u.pathname;
+    }catch(e){
+      return String(url || '');
+    }
+  }
+
+  function openMediaDB(){
+    return new Promise((resolve, reject)=>{
+      const req = indexedDB.open(MEDIA_DB, 1);
+      req.onupgradeneeded = ()=>{
+        const db = req.result;
+        if (!db.objectStoreNames.contains(MEDIA_STORE)){
+          db.createObjectStore(MEDIA_STORE, { keyPath: "key" });
         }
-      }
-      const updatesCount = Array.isArray(payload.updates) ? payload.updates.length : 0;
-      if (updatesCount) {
-        badges.push({
-          icon: "fa-layer-group",
-          text: updatesCount + " update" + (updatesCount === 1 ? "" : "s"),
-        });
-      }
-      $("heroBadges").innerHTML = badges.map(b => `
-        <span class="pk-pill-glass">
-          <i class="fa-solid ${b.icon}"></i>${escapeHtml(b.text)}
-        </span>
-      `).join("");
-
-      // Location row
-      if (payload.location) {
-        $("pLocationRow").style.display = "";
-        $("pLocation").textContent = payload.location;
-      }
-
-      // ---- Action bar (contact) ----
-      const sharedBy = (payload.shared_by || "").trim();
-      const phone = normalizePhone(payload.shared_contact);
-
-      if (sharedBy || phone) {
-        $("pActionBar").style.display = "";
-        $("pSharedName").textContent = sharedBy || "Project contact";
-        $("pSharedAvatar").textContent = initialsFor(sharedBy || "·");
-
-        // Desktop bar
-        if (phone) {
-          const tel = "tel:" + phone;
-          const wa  = "https://wa.me/" + phone.replace(/[^\d]/g, "");
-          $("btnCall").style.display = ""; $("btnCall").href = tel;
-          $("btnWhatsapp").style.display = ""; $("btnWhatsapp").href = wa;
-          // Mobile sticky bar
-          $("mbCall").style.display = "";    $("mbCall").href = tel;
-          $("mbWa").style.display = "";      $("mbWa").href = wa;
-        }
-
-        // Share/copy link button
-        $("btnShareLink").addEventListener("click", copyLink);
-        $("mbShare").addEventListener("click", nativeShareOrCopy);
-      }
-
-      // ---- Description ----
-      if (payload.description && payload.description.trim()) {
-        $("pDescriptionSec").style.display = "";
-        $("pDescription").textContent = payload.description;
-      }
-
-      // ---- Gallery ----
-      const gallery = (Array.isArray(payload.gallery) ? payload.gallery : [])
-        .map(g => g?.url || g?.src).filter(Boolean);
-
-      if (gallery.length) {
-        $("pGallerySec").style.display = "";
-        $("pGalleryMeta").textContent = gallery.length + " photo" + (gallery.length === 1 ? "" : "s");
-        renderGalleryDesktop(gallery);
-        renderGalleryMobile(gallery);
-      }
-
-      // ---- Timeline ----
-      const updates = Array.isArray(payload.updates) ? payload.updates.slice() : [];
-      updates.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
-
-      if (updates.length) {
-        $("pTimelineSec").style.display = "";
-        $("pTimelineMeta").textContent =
-          "Latest: " + (fmtMonthYear(updates[0].date) || fmtDayMonthYear(updates[0].date) || "");
-        renderTimeline(updates);
-      }
-
-      // ---- Location section (with map link) ----
-      if (payload.location) {
-        $("pLocationSec").style.display = "";
-        $("pLocationDetailed").textContent = payload.location;
-        $("btnViewMap").href =
-          "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(payload.location);
-      }
-
-      showPage();
-    }
-
-    // ---- Gallery: desktop mosaic (max 5 cells, "+N more") ----
-    function renderGalleryDesktop(urls) {
-      const wrap = $("pGallery");
-      const visible = urls.slice(0, 5);
-      const extra = urls.length - visible.length;
-
-      wrap.innerHTML = visible.map((u, i) => {
-        const isLast = i === visible.length - 1 && extra > 0;
-        return `
-          <div class="pk-gallery__cell" data-idx="${i}">
-            <img src="${escapeHtml(u)}" alt="" loading="lazy">
-            ${isLast ? `
-              <div class="pk-gallery__more">
-                <i class="fa-regular fa-images"></i>+${extra} more
-              </div>` : ""}
-          </div>`;
-      }).join("");
-
-      wrap.querySelectorAll(".pk-gallery__cell").forEach((cell) => {
-        cell.addEventListener("click", () => {
-          const i = parseInt(cell.dataset.idx, 10) || 0;
-          lbOpen(urls, i);
-        });
-      });
-    }
-
-    // ---- Gallery: mobile horizontal carousel ----
-    function renderGalleryMobile(urls) {
-      const wrap = $("pGalleryMobile");
-      wrap.innerHTML = urls.map((u, i) => `
-        <div class="pk-gallery-mobile__cell" data-idx="${i}">
-          <img src="${escapeHtml(u)}" alt="" loading="lazy">
-        </div>
-      `).join("");
-
-      wrap.querySelectorAll(".pk-gallery-mobile__cell").forEach((cell) => {
-        cell.addEventListener("click", () => {
-          const i = parseInt(cell.dataset.idx, 10) || 0;
-          lbOpen(urls, i);
-        });
-      });
-    }
-
-    // ---- Timeline cards ----
-    function renderTimeline(updates) {
-      const wrap = $("pTimeline");
-
-      wrap.innerHTML = updates.map((u, idx) => {
-        const url   = u.file_url || "";
-        const name  = u.file_name || "";
-        const isPdf = (u.file_type || "").includes("pdf") || isPdfFromName(name);
-        const isImg = (u.file_type || "").startsWith("image/") || isImageFromName(name);
-
-        const iconCls   = isPdf ? "is-pdf" : (isImg ? "is-image" : "");
-        const iconHtml  = isPdf
-          ? `<i class="fa-regular fa-file-pdf"></i>`
-          : isImg
-            ? `<i class="fa-regular fa-image"></i>`
-            : `<i class="fa-regular fa-file"></i>`;
-
-        const monthYear = fmtMonthYear(u.date);
-        const fullDate  = fmtDayMonthYear(u.date);
-
-        const previewHtml = (isImg && url)
-          ? `<img class="pk-tl__preview" src="${escapeHtml(url)}" alt="" loading="lazy" data-img-url="${escapeHtml(url)}">`
-          : "";
-
-        const actions = url ? `
-          <div class="pk-tl__actions">
-            <a class="pk-cta pk-cta--primary" href="${escapeHtml(url)}" target="_blank" rel="noopener" ${isImg ? `data-img-url="${escapeHtml(url)}"` : ""}>
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-              <span>Open</span>
-            </a>
-            <a class="pk-cta pk-cta--ghost" href="${escapeHtml(url)}" download rel="noopener" target="_blank" aria-label="Download">
-              <i class="fa-solid fa-download"></i>
-              <span>Download</span>
-            </a>
-          </div>` : "";
-
-        return `
-          <article class="pk-tl">
-            <div class="pk-tl__date">${escapeHtml(monthYear || fullDate || "")}</div>
-            <div class="pk-tl__card">
-              <div class="pk-tl__head">
-                <div class="pk-tl__icon ${iconCls}">${iconHtml}</div>
-                <div class="pk-tl__title">
-                  <h4>${escapeHtml(u.title || "Update")}</h4>
-                  <small><i class="fa-regular fa-calendar"></i>${escapeHtml(fullDate || "")}</small>
-                </div>
-              </div>
-              ${u.description ? `<p class="pk-tl__desc">${escapeHtml(u.description)}</p>` : ""}
-              ${previewHtml}
-              ${actions}
-            </div>
-          </article>
-        `;
-      }).join("");
-
-      // Click on inline preview image → lightbox (using update images only)
-      const updateImgs = updates
-        .filter(u => {
-          const isImg = (u.file_type || "").startsWith("image/") || isImageFromName(u.file_name);
-          return isImg && u.file_url;
-        })
-        .map(u => u.file_url);
-
-      wrap.querySelectorAll("[data-img-url]").forEach((el) => {
-        el.addEventListener("click", (e) => {
-          // Only intercept anchor clicks if it's an image (open in lightbox instead)
-          if (el.tagName === "A") e.preventDefault();
-          const url = el.getAttribute("data-img-url");
-          const idx = Math.max(0, updateImgs.indexOf(url));
-          lbOpen(updateImgs, idx);
-        });
-      });
-    }
-
-    // ---- Share / copy actions ----
-    async function copyLink() {
-      try {
-        await navigator.clipboard.writeText(location.href);
-        toast("Link copied");
-      } catch {
-        // Fallback
-        const t = document.createElement("textarea");
-        t.value = location.href;
-        document.body.appendChild(t);
-        t.select();
-        try { document.execCommand("copy"); } catch {}
-        t.remove();
-        toast("Link copied");
-      }
-    }
-
-    async function nativeShareOrCopy() {
-      const data = {
-        title: document.title,
-        text: $("pTitle").textContent + " — view updates",
-        url: location.href,
       };
-      if (navigator.share) {
-        try { await navigator.share(data); } catch {}
-      } else {
-        copyLink();
+      req.onsuccess = ()=> resolve(req.result);
+      req.onerror = ()=> reject(req.error);
+    });
+  }
+
+  async function idbGet(key){
+    const db = await openMediaDB();
+    return new Promise((resolve)=>{
+      const tx = db.transaction(MEDIA_STORE, "readonly");
+      const st = tx.objectStore(MEDIA_STORE);
+      const req = st.get(key);
+      req.onsuccess = ()=> resolve(req.result || null);
+      req.onerror = ()=> resolve(null);
+    });
+  }
+
+  async function idbPut(obj){
+    const db = await openMediaDB();
+    return new Promise((resolve)=>{
+      const tx = db.transaction(MEDIA_STORE, "readwrite");
+      const st = tx.objectStore(MEDIA_STORE);
+      st.put(obj);
+      tx.oncomplete = ()=> resolve(true);
+      tx.onerror = ()=> resolve(false);
+    });
+  }
+
+  async function downloadAndStoreBlob(url){
+    const key = normalizeMediaKey(url);
+    const existing = await idbGet(key);
+    if (existing && existing.blob) return existing;
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("download failed: " + res.status);
+
+    const blob = await res.blob();
+    const obj = {
+      key,
+      blob,
+      type: blob.type || res.headers.get("content-type") || "application/octet-stream",
+      size: blob.size || 0,
+      cached_at: Date.now()
+    };
+    await idbPut(obj);
+    return obj;
+  }
+
+  function guessExtType(url, mime){
+    const u = String(url || '').toLowerCase();
+    if (mime && mime.startsWith("image/")) return "image";
+
+    if (/\.(png|jpg|jpeg|webp|gif)(\?|$)/i.test(u)) return "image";
+    if (/\.(pdf)(\?|$)/i.test(u)) return "pdf";
+    if (/\.(mp4|webm)(\?|$)/i.test(u)) return "video";
+    if (/\.(mp3|wav|m4a)(\?|$)/i.test(u)) return "audio";
+    return "file";
+  }
+
+  async function getOrDownloadBlobUrl(src){
+    const key = normalizeMediaKey(src);
+    let obj = await idbGet(key);
+    if (!obj || !obj.blob){
+      obj = await downloadAndStoreBlob(src);
+    }
+    return { blobUrl: URL.createObjectURL(obj.blob), mime: obj.type || "" };
+  }
+
+  // =========================================
+  // Modals: Media Viewer
+  // =========================================
+  let mediaViewerOpen = false;
+
+  function openMediaModal(htmlContent){
+    const mv = document.getElementById("mediaViewer");
+    const body = document.getElementById("mediaViewerBody");
+    if (!mv || !body) return;
+
+    body.innerHTML = htmlContent;
+    mv.style.display = "grid";
+
+    if (!mediaViewerOpen){
+      mediaViewerOpen = true;
+      history.pushState({ mediaViewer: true }, "");
+    }
+  }
+
+  function closeMediaModal(fromPopstate = false){
+    const mv = document.getElementById("mediaViewer");
+    const body = document.getElementById("mediaViewerBody");
+    if (!mv || !body) return;
+
+    mv.style.display = "none";
+    body.innerHTML = "";
+
+    if (mediaViewerOpen && !fromPopstate) {
+      mediaViewerOpen = false;
+      history.back();
+    } else {
+      mediaViewerOpen = false;
+    }
+  }
+
+  function wireMediaViewer(){
+    const mv = document.getElementById("mediaViewer");
+
+    if (mv) mv.addEventListener("click", (e)=>{
+      if (e.target === mv) closeMediaModal(false);
+    });
+
+    window.addEventListener("popstate", ()=>{
+      if (mediaViewerOpen){
+        closeMediaModal(true);
       }
+    });
+  }
+
+  async function openOfflineMedia(url){
+    const { blobUrl, mime } = await getOrDownloadBlobUrl(url);
+    const kind = guessExtType(url, mime);
+
+    if (kind === "video"){
+      openMediaModal(`
+        <video controls autoplay playsinline
+               style="width:100%;max-height:95dvh;border-radius:14px;background:#000;"
+               src="${blobUrl}"></video>
+        <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="closeMediaBtn"
+                  style="border:0;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;">
+            Close
+          </button>
+        </div>
+      `);
+    } else if (kind === "audio"){
+      openMediaModal(`
+        <audio controls autoplay style="width:100%;" src="${blobUrl}"></audio>
+        <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="closeMediaBtn"
+                  style="border:0;border-radius:12px;padding:10px 12px;font-weight:900;cursor:pointer;">
+            Close
+          </button>
+        </div>
+      `);
+    } else {
+      window.open(blobUrl, "_blank", "noopener");
+      return;
     }
 
-    // ---- Tiny inline toast (no dependency on toast.js) ----
-    let _toastEl = null;
-    function toast(msg) {
-      if (_toastEl) { _toastEl.remove(); _toastEl = null; }
-      const el = document.createElement("div");
-      el.textContent = msg;
-      el.style.cssText = `
-        position:fixed;left:50%;bottom:84px;transform:translateX(-50%);
-        background:rgba(11,18,32,.92);color:#fff;padding:10px 18px;
-        border-radius:999px;font-size:13.5px;font-weight:500;letter-spacing:.01em;
-        z-index:9999;box-shadow:0 12px 36px rgba(0,0,0,.25);
-        backdrop-filter:blur(8px);opacity:0;transition:opacity .25s ease;`;
-      document.body.appendChild(el);
-      _toastEl = el;
-      requestAnimationFrame(() => (el.style.opacity = "1"));
-      setTimeout(() => {
-        el.style.opacity = "0";
-        setTimeout(() => { el.remove(); if (_toastEl === el) _toastEl = null; }, 280);
-      }, 1800);
-    }
+    setTimeout(()=>{
+      const btn = document.getElementById("closeMediaBtn");
+      if (btn) btn.onclick = ()=> closeMediaModal(false);
+    }, 0);
+  }
 
-    // ============================================================
-    // Init
-    // ============================================================
-    (async function init() {
-      const pid = (qs("pid") || qs("sid") || "").trim();
-      if (!pid) {
-        showExpired("This link is missing a project reference.");
-        return;
-      }
-
-      try {
-        const res = await fetch(publicJsonUrl(pid), { cache: "no-store" });
-        if (!res.ok) throw new Error("not_found");
-        const payload = await res.json();
-        render(payload);
-      } catch (err) {
-        console.warn("share fetch failed", err);
-        showExpired();
-      }
-    })();
+  // Register Service Worker (optional but fine)
+  (function registerSW(){
+    try{
+      if (!('serviceWorker' in navigator)) return;
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .catch(()=>{});
+    }catch(e){}
   })();
-  </script>
+
+  // Cache share contact
+  function cacheShareContact(sid, payload){
+    try{
+      localStorage.setItem(`share_contact_${sid}`, JSON.stringify({
+        shared_by: safeText(payload?.shared_by),
+        shared_contact: safeText(payload?.shared_contact),
+        cached_at: Date.now()
+      }));
+    }catch(e){}
+  }
+
+  // Expired UI
+  function showExpiredUI(sid){
+    const cardBlock = document.querySelector('main.card');
+    if (cardBlock) cardBlock.style.display = 'none';
+
+    const expiredSec = document.getElementById('expiredSec');
+    const expiredTitle = document.getElementById('expiredTitle');
+    const expiredContactRow = document.getElementById('expiredContactRow');
+    if (expiredSec) expiredSec.style.display = 'block';
+
+    const fromUrl = getUrlContact();
+    const title = safeText(fromUrl.title);
+    const name = safeText(fromUrl.name);
+    const phone = safeText(fromUrl.phone);
+
+    if (expiredTitle) expiredTitle.textContent = title ? `Title: ${title}` : '';
+
+    if (expiredContactRow) {
+      if (name || phone) {
+        expiredContactRow.innerHTML = `
+          <span>${escapeHtml(name || 'Shared By')}</span>
+          ${phone ? `<span style="opacity:0.7;"> - </span><span style="font-weight:800;">${escapeHtml(phone)}</span>` : ''}
+          ${
+			phone
+			  ? `
+				<!-- 📞 CALL -->
+				<a href="tel:${escapeHtml(String(phone).trim())}"
+				   title="Call"
+				   style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+				  <i class="fa fa-phone" style="color:green;font-size:18px;"></i>
+				</a>
+
+				<!-- 🟢 WHATSAPP -->
+				<a href="https://wa.me/${escapeHtml(String(phone).trim().replace(/[^\d]/g,''))}"
+				   target="_blank"
+				   title="WhatsApp"
+				   style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-left:12px;">
+				  <i class="fa-brands fa-whatsapp"
+					 style="color:#25D366;font-size:18px;"></i>
+				</a>
+			  `
+			  : ``
+
+          }
+        `;
+      } else {
+        expiredContactRow.textContent = 'Contact information not available.';
+      }
+    }
+
+    showContent();
+  }
+
+  // JSON payload cache
+  function saveSharePayload(sid, payload){
+    try{
+      localStorage.setItem(`share_payload_${sid}`, JSON.stringify({ payload, t: Date.now() }));
+    }catch(e){}
+  }
+  function loadSharePayload(sid){
+    try{
+      const raw = localStorage.getItem(`share_payload_${sid}`);
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      return obj?.payload || null;
+    }catch(e){ return null; }
+  }
+
+  // =========================================
+  // Render Function (Reusable)
+  // =========================================
+  async function renderFromPayload(payload){
+    document.getElementById('title').textContent = safeText(payload.title);
+    document.getElementById('area').textContent  = safeText(payload.area);
+    document.getElementById('summary').innerHTML = summaryToBullets(payload.summary);
+	
+	// ===== Location =====
+	(function renderLocation(){
+	  const locSec = document.getElementById('locationSec');
+	  const locBox = document.getElementById('location');
+	  if (!locSec || !locBox) return;
+
+	  const mapUrl = safeText(payload.location);
+
+	  if (!mapUrl) {
+		locSec.style.display = "none";
+		return;
+	  }
+
+	locBox.innerHTML = `
+	  <a href="${escapeHtml(mapUrl)}"
+		 target="_blank"
+		 rel="noopener noreferrer"
+		 style="
+		   color:#2563eb;
+		   font-weight:700;
+		   text-decoration:underline;
+		   display:inline-flex;
+		   align-items:center;
+		   gap:6px;
+		 ">
+		<i class="fa fa-map-marker-alt"></i>
+		Click to view location on map
+	  </a>
+	`;
+
+	  locSec.style.display = "block";
+	})();
+
+
+
+    // Shared By
+    const sb = safeText(payload.shared_by);
+    const sc = safeText(payload.shared_contact);
+    const sharedByRow = document.getElementById('sharedByRow');
+    const sharedBy = document.getElementById('sharedBy');
+
+    if ((sb || sc) && sharedByRow && sharedBy) {
+      sharedByRow.style.display = "block";
+		sharedBy.innerHTML = `
+		  <span style="font-weight:500;">${escapeHtml(sb || 'N/A')}</span>
+		  ${sc ? `<span style="opacity:0.7;"> - </span><span>${escapeHtml(sc)}</span>` : ''}
+
+		  ${
+			sc
+			  ? `
+				<!-- 📞 CALL -->
+				<a href="tel:${escapeHtml(String(sc).trim())}"
+				   title="Call Publisher"
+				   style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-left:10px;">
+				  <i class="fa fa-phone" style="color:green;font-size:18px;"></i>
+				</a>
+
+				<!-- 🟢 WHATSAPP -->
+				<a href="https://wa.me/${escapeHtml(String(sc).trim().replace(/[^\d]/g,''))}"
+				   target="_blank"
+				   title="WhatsApp Publisher"
+				   style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-left:12px;">
+				  <i class="fa-brands fa-whatsapp"
+					 style="color:#25D366;font-size:18px;"></i>
+				</a>
+			  `
+			  : ``
+		  }
+		`;
+
+    }
+
+    // Pills
+    const type = safeText(payload.type);
+    const cat  = safeText(payload.category);
+    const typePill = document.getElementById('typePill');
+    const catPill  = document.getElementById('catPill');
+    if (type) { typePill.textContent = type; typePill.style.display = "inline-flex"; }
+    if (cat)  { catPill.textContent  = cat;  catPill.style.display  = "inline-flex"; }
+
+    // Images (render placeholders first, then swap to blob URLs)
+    const imgs = Array.isArray(payload.images) ? payload.images : [];
+    const imgSec  = document.getElementById('imgSec');
+    const imgGrid = document.getElementById('imgGrid');
+
+    if (!imgs.length){
+      if (imgSec) imgSec.style.display = "none";
+    } else {
+      if (imgSec) imgSec.style.display = "block";
+      imgGrid.innerHTML = imgs.map((src, i) =>
+        `<img src="" data-src="${escapeHtml(src)}" data-i="${i}" alt="image">`
+      ).join('');
+
+      // Load blob URLs (no Supabase URL shown)
+		const list = imgGrid.querySelectorAll("img[data-src]");
+		for (const im of list){
+		  const src = im.getAttribute("data-src");
+		  if (!src) continue;
+
+		  try{
+			const key = normalizeMediaKey(src);
+			const obj = await idbGet(key);
+			if (obj && obj.blob){
+			  const blobUrl = URL.createObjectURL(obj.blob);
+			  im.src = blobUrl;
+			  im.setAttribute("data-blob", blobUrl);
+			}
+		  }catch(e){}
+		}
+
+    }
+
+    // Attachments
+    const atts = Array.isArray(payload.attachments) ? payload.attachments : [];
+    const attSec  = document.getElementById('attSec');
+    const attList = document.getElementById('attList');
+
+    if (!atts.length){
+      if (attSec) attSec.style.display = "none";
+    } else {
+      if (attSec) attSec.style.display = "block";
+      attList.innerHTML = atts.map((a, idx) => {
+        const name = escapeHtml(a?.name || ("Attachment " + (idx+1)));
+        const src  = escapeHtml(a?.src || "");
+        const isMedia = (/\.(mp4|webm|mp3|wav|m4a)(\?|$)/i.test(src));
+        return `
+          <div class="att">
+            <div class="name">${name}</div>
+            ${
+              isMedia
+                ? `<button class="openMediaBtn" data-src="${src}"
+                    style="margin-left:auto;background:#1d4ed8;color:#fff;padding:9px 12px;border-radius:12px;
+                           font-size:13px;border:0;font-weight:900;cursor:pointer;">Play</button>`
+                : `<button class="openFileBtn" data-src="${src}"
+                    style="margin-left:auto;background:#1d4ed8;color:#fff;padding:9px 12px;border-radius:12px;
+                           font-size:13px;border:0;font-weight:900;cursor:pointer;">Open</button>`
+            }
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Wire media buttons
+    wireMediaViewer();
+
+    if (attList){
+      attList.addEventListener('click', (e) => {
+        const mediaBtn = e.target && e.target.closest ? e.target.closest(".openMediaBtn") : null;
+        if (mediaBtn){
+          const src = mediaBtn.getAttribute("data-src");
+          if (!src) return;
+          openOfflineMedia(src).catch(()=>alert("This media is not cached yet. Please open once with internet."));
+          return;
+        }
+      });
+
+      // File buttons (PDF included)
+      attList.addEventListener("click", async (e)=>{
+        const fileBtn = e.target && e.target.closest ? e.target.closest(".openFileBtn") : null;
+        if (!fileBtn) return;
+        const src = fileBtn.getAttribute("data-src");
+        if (!src) return;
+
+        try{
+          const { blobUrl, mime } = await getOrDownloadBlobUrl(src);
+
+          window.open(blobUrl, "_blank", "noopener");
+        }catch(err){
+          alert("File not cached yet. Please open once with internet.");
+        }
+      });
+    }
+
+    // Fullscreen image viewer
+    const viewer = document.getElementById('viewer');
+    const viewerImg = document.getElementById('viewerImg');
+    const viewerClose = document.getElementById('viewerClose');
+    let viewerOpen = false;
+
+    imgGrid.addEventListener('click', (e) => {
+      const t = e.target;
+      if (!t || t.tagName !== "IMG") return;
+      const src = t.getAttribute("data-blob") || t.getAttribute("src") || t.getAttribute("data-src");
+      if (!src) return;
+
+      viewerImg.src = src;
+      viewer.style.display = "grid";
+
+      if (!viewerOpen) {
+        viewerOpen = true;
+        history.pushState({ viewer: true }, "");
+      }
+    });
+
+    function closeViewer(fromPopstate = false){
+      viewer.style.display = "none";
+      viewerImg.src = "";
+      if (viewerOpen && !fromPopstate) {
+        viewerOpen = false;
+        history.back();
+      } else {
+        viewerOpen = false;
+      }
+    }
+
+    window.addEventListener('popstate', () => {
+      if (viewerOpen) closeViewer(true);
+    });
+
+    viewerClose.addEventListener('click', closeViewer);
+    viewer.addEventListener('click', (e) => {
+      if (e.target === viewer) closeViewer();
+    });
+  }
+
+  // =========================================
+  // Main init
+  // =========================================
+  (function init(){
+    const sid = String(qs('sid') || '').trim();
+
+    if (!sid){
+      document.body.innerHTML = "<div style='padding:18px;font-weight:900;font-family:system-ui'>Invalid share link.</div>";
+      return;
+    }
+
+(async function(){
+  try{
+
+    let payload;
+
+    // 1️⃣ Try cache first
+    const cachedPayload = loadSharePayload(sid);
+
+    if (cachedPayload) {
+      payload = cachedPayload;
+    } else {
+      // 2️⃣ Fetch from network
+      const jsonFile = `share_${encodeURIComponent(sid)}.json`;
+      const jsonUrl = `https://mxuknvleveqqybhbhwnv.supabase.co/storage/v1/object/public/shares/${encodeURIComponent(jsonFile)}`;
+
+      const res = await fetch(jsonUrl);
+      if (!res.ok) throw new Error("Share JSON not found");
+
+      payload = await res.json();
+
+      requestPersistence();
+
+      saveSharePayload(sid, payload);
+      cacheShareContact(sid, payload);
+    }
+
+    // 3️⃣ Cache ALL media before rendering
+    const urls = [
+      ...(Array.isArray(payload.images) ? payload.images : []),
+      ...(Array.isArray(payload.attachments)
+          ? payload.attachments.map(a => a?.src).filter(Boolean)
+          : [])
+    ].filter(Boolean);
+
+    const filtered = urls.filter(u =>
+      /\.(mp4|webm|mp3|wav|m4a|pdf|png|jpg|jpeg|webp|gif)(\?|$)/i.test(String(u))
+    );
+
+    if (filtered.length > 0) {
+      let total = filtered.length;
+      let done = 0;
+
+      const loaderTitle = document.getElementById('loaderTitle');
+      <!-- const loaderSub   = document.getElementById('loaderSub'); -->
+
+      await Promise.all(
+        filtered.map(async (u) => {
+          try { await downloadAndStoreBlob(u); } catch(e){}
+
+          done++;
+          const percent = Math.round((done / total) * 100);
+
+          if (loaderTitle) loaderTitle.textContent = `Loading details... ${percent}%`;
+          <!-- if (loaderSub) loaderSub.textContent = `Downloading media ${done} of ${total}`; -->
+        })
+      );
+    }
+
+    // 4️⃣ Now render
+    await renderFromPayload(payload);
+    showContent();
+
+  } catch(e){
+
+    const cachedPayload = loadSharePayload(sid);
+    if (cachedPayload){
+      await renderFromPayload(cachedPayload);
+      showContent();
+      return;
+    }
+
+    showExpiredUI(sid);
+  }
+})();
+
+  })();
+</script>
+
+
+<!-- <script src="https://pl28554800.effectivegatecpm.com/73/be/3e/73be3eb72d2980e3df8cdd18939e0602.js"></script> -->
+<!-- <script async data-cfasync="false" src="https://pl28554907.effectivegatecpm.com/358ccab821f56114a2734139c41efd06/invoke.js"></script> -->
+
+<!-- <!-- Sticky Bottom Banner -->
+<!-- <div id="stickyBanner"> -->
+  <!-- <div class="sticky-inner"> -->
+
+    <!-- <!-- Adsterra / Banner Ad -->
+    <!-- <script> -->
+      <!-- atOptions = { -->
+        <!-- 'key' : '5942674854ad5bb01e53005580dd351b', -->
+        <!-- 'format' : 'iframe', -->
+        <!-- 'height' : 50, -->
+        <!-- 'width' : 320, -->
+        <!-- 'params' : {} -->
+      <!-- }; -->
+    <!-- </script> -->
+    <!-- <script src="https://www.highperformanceformat.com/5942674854ad5bb01e53005580dd351b/invoke.js"></script> -->
+
+  <!-- </div> -->
+<!-- </div> -->
+
+
 
 </body>
 </html>
