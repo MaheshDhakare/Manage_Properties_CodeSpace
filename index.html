@@ -1115,7 +1115,21 @@ button,a{touch-action:manipulation;}
   .hero-actions .btn{width:100%;text-align:center;}
   .dashboard-top{align-items:flex-start;gap:10px;flex-wrap:wrap;}
   .metrics{grid-template-columns:1fr;}
-  .float-one,.float-two{position:static;display:inline-block;margin-top:12px;}
+.float-card{
+  position:absolute;
+  z-index:5;
+  white-space:nowrap;
+}
+
+.float-one{
+  left:-8px;
+  bottom:55px;
+}
+
+.float-two{
+  right:-8px;
+  top:80px;
+}
   .hero-dashboard{display:flex;flex-direction:column;}
   .portal-box{padding:28px 22px;}
   .portal-box h2{font-size:clamp(30px,8vw,36px);}
@@ -1443,9 +1457,13 @@ button,a{touch-action:manipulation;}
     <p>
       Start with one Customer Intelligence Campaign and get a clearer view of experience, salesperson performance, concerns, competition and decision signals.
     </p>
+    <p>
+      Have a requirement or want to understand how PropCola can work for your business?
+    </p>
     <div class="contact">
       <div class="contact-person"><strong>Neha Dhakare</strong><a href="tel:+919370503500">+91 93705 03500</a></div>
       <a class="btn btn-primary" href="https://wa.me/919370503500?text=Hi%20Neha%2C%20I%20would%20like%20to%20know%20more%20about%20PropCola%20Customer%20Experience%20Intelligence." target="_blank" rel="noopener">Chat on WhatsApp →</a>
+      <a class="btn btn-primary" href="mailto:connect@propcola.com">Email Us →</a>
     </div>
   </div>
 </section>
